@@ -133,12 +133,12 @@ class DomainAdaptationModule(torch.nn.Module):
                 da_img_features, da_ins_features, da_img_consist_features, da_ins_consist_features, da_ins_labels, targets
             )
             losses = {}
-            if self.img_weight > 0:
-                losses["loss_da_image"] = self.img_weight * da_img_loss
+            # if self.img_weight > 0:
+            #     losses["loss_da_image"] = self.img_weight * da_img_loss
             if self.ins_weight > 0:
                 losses["loss_da_instance"] = self.ins_weight * da_ins_loss
-            if self.cst_weight > 0:
-                losses["loss_da_consistency"] = self.cst_weight * da_consistency_loss
+            # if self.cst_weight > 0:
+            #     losses["loss_da_consistency"] = self.cst_weight * da_consistency_loss
             return losses
         return {}
 

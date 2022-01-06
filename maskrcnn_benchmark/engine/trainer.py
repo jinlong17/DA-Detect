@@ -9,6 +9,10 @@ import torch.distributed as dist
 from maskrcnn_benchmark.utils.comm import get_world_size
 from maskrcnn_benchmark.utils.metric_logger import MetricLogger
 
+import warnings
+
+import pdb
+
 
 def reduce_loss_dict(loss_dict):
     """
@@ -53,6 +57,7 @@ def do_train(
     model.train()
     start_training_time = time.time()
     end = time.time()
+    warnings.filterwarnings("ignore", category=UserWarning)
     for iteration, (images, targets, _) in enumerate(data_loader, start_iter):
         data_time = time.time() - end
         iteration = iteration + 1
@@ -144,6 +149,7 @@ def do_da_train(
         loss_dict = model(images, targets)
 
         losses = sum(loss for loss in loss_dict.values())
+        # pdb.set_trace()
 
         # reduce losses over all GPUs for logging purposes
         loss_dict_reduced = reduce_loss_dict(loss_dict)

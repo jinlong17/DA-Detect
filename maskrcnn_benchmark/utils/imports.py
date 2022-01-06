@@ -1,7 +1,15 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-01-04 23:54:15
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import torch
 
-if torch._six.PY3:
+if torch._six.PY37:
     import importlib
     import importlib.util
     import sys

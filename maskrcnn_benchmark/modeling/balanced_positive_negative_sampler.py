@@ -1,3 +1,11 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-01-05 13:57:10
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import torch
 
@@ -54,10 +62,10 @@ class BalancedPositiveNegativeSampler(object):
 
             # create binary mask from indices
             pos_idx_per_image_mask = torch.zeros_like(
-                matched_idxs_per_image, dtype=torch.uint8
+                matched_idxs_per_image, dtype=torch.bool
             )
             neg_idx_per_image_mask = torch.zeros_like(
-                matched_idxs_per_image, dtype=torch.uint8
+                matched_idxs_per_image, dtype=torch.bool
             )
             pos_idx_per_image_mask[pos_idx_per_image] = 1
             neg_idx_per_image_mask[neg_idx_per_image] = 1

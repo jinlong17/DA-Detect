@@ -1,3 +1,11 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2021-10-15 17:13:40
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-01-04 10:57:17
+'''
 #!/usr/bin/python
 #
 # Convert instances from png files to a dictionary
@@ -7,7 +15,7 @@ from __future__ import print_function, absolute_import, division
 import os, sys
 
 sys.path.append( os.path.normpath( os.path.join( os.path.dirname( __file__ ) , '..' , 'helpers' ) ) )
-from csHelpers import *
+# from csHelpers import *
 
 # Cityscapes imports
 from cityscapesscripts.evaluation.instance import *

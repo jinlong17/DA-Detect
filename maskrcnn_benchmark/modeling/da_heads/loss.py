@@ -1,3 +1,11 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-01-05 16:21:05
+'''
 """
 This file contains specific functions for computing losses on the da_heads
 file
@@ -36,7 +44,7 @@ class DALossComputation(object):
         masks = []
         for targets_per_image in targets:
             is_source = targets_per_image.get_field('is_source')
-            mask_per_image = is_source.new_ones(1, dtype=torch.uint8) if is_source.any() else is_source.new_zeros(1, dtype=torch.uint8)
+            mask_per_image = is_source.new_ones(1, dtype=torch.bool) if is_source.any() else is_source.new_zeros(1, dtype=torch.bool)
             masks.append(mask_per_image)
         return masks
 

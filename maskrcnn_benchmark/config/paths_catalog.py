@@ -92,26 +92,57 @@ class DatasetCatalog(object):
             "split": "test"
             # PASCAL VOC2012 doesn't made the test annotations available, so there's no json annotation
         },
+
+
+
+
+        # "cityscapes_fine_instanceonly_seg_train_cocostyle": {
+        #     "img_dir": "cityscapes/images",
+        #     "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_train.json"
+        # },
+        # "cityscapes_fine_instanceonly_seg_val_cocostyle": {
+        #     "img_dir": "cityscapes/images",
+        #     "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_val.json"
+        # },
+        # "cityscapes_fine_instanceonly_seg_test_cocostyle": {
+        #     "img_dir": "cityscapes/images",
+        #     "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_test.json"
+        # },
+        # "foggy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
+        #     "img_dir": "foggy_cityscapes/images",
+        #     "ann_file": "foggy_cityscapes/annotations/foggy_instancesonly_filtered_gtFine_train.json"
+        # },
+
+        # "foggy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
+        #     "img_dir": "foggy_cityscapes/images",
+        #     "ann_file": "foggy_cityscapes/annotations/foggy_instancesonly_filtered_gtFine_val.json"
+        # },
+
         "cityscapes_fine_instanceonly_seg_train_cocostyle": {
-            "img_dir": "cityscapes/images",
-            "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_train.json"
+            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest/leftImg8bit/train",
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
         },
         "cityscapes_fine_instanceonly_seg_val_cocostyle": {
-            "img_dir": "cityscapes/images",
-            "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_val.json"
+            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest/leftImg8bit/val",
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
         },
         "cityscapes_fine_instanceonly_seg_test_cocostyle": {
-            "img_dir": "cityscapes/images",
-            "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_test.json"
+            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest/leftImg8bit/test",
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_test.json"
         },
         "foggy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
-            "img_dir": "foggy_cityscapes/images",
-            "ann_file": "foggy_cityscapes/annotations/foggy_instancesonly_filtered_gtFine_train.json"
+            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/train",
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest_foggy/annotations/foggy_instancesonly_filtered_gtFine_train.json"
         },
+
         "foggy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
-            "img_dir": "foggy_cityscapes/images",
-            "ann_file": "foggy_cityscapes/annotations/foggy_instancesonly_filtered_gtFine_val.json"
+            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/val",
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/leftImg8bit_trainvaltest_foggy/annotations/foggy_instancesonly_filtered_gtFine_val.json"
         },
+
+
+
+
         'sim10k_cocostyle': {
                 "img_dir": 'sim10k/JPEGImages',
                 "ann_file": 'sim10k/car_instances.json'

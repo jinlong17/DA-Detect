@@ -29,8 +29,10 @@ import os
 import scipy.misc
 import sys
 import numpy as np
+import pdb
 
-import cityscapesscripts.evaluation.instances2dict_with_polygons as cs
+# import cityscapesscripts.evaluation.instances2dict_with_polygons as cs
+import instances2dict_with_polygons as cs
 
 
 def parse_args():
@@ -84,27 +86,43 @@ def getLabelID(self, instID):
         return int(instID / 1000)
 
 
-def convert_foggy_cityscapes_instance_only(
-        data_dir, out_dir):
+def convert_foggy_cityscapes_instance_only(data_dir, out_dir):
     """Convert from cityscapes format to COCO instance seg format - polygons"""
     sets = [
-        'gtFine_val',
-        'gtFine_train',
-        'gtFine_test',
+        # 'gtFine_val',
+        # 'gtFine_train',
+        # 'gtFine_test',
+        # 'val',
+        # 'train',
+        # 'test',
+        'gtFine',
+        'gtFine',
+        'gtFine',
 
         # 'gtCoarse_train',
         # 'gtCoarse_val',
         # 'gtCoarse_train_extra'
     ]
     ann_dirs = [
-        'gtFine_trainvaltest/gtFine/val',
-        'gtFine_trainvaltest/gtFine/train',
-        'gtFine_trainvaltest/gtFine/test',
-
+        # 'gtFine_trainvaltest/gtFine/val',
+        # 'gtFine_trainvaltest/gtFine/train',
+        # 'gtFine_trainvaltest/gtFine/test',
+        'gtFine/test',
+        'gtFine/val',
+        'gtFine/train',
         # 'gtCoarse/train',
         # 'gtCoarse/train_extra',
         # 'gtCoarse/val'
     ]
+
+    sets_name = [
+
+        'gtFine_test',
+        'gtFine_val',
+        'gtFine_train',
+
+    ]
+
     json_name = 'foggy_instancesonly_filtered_%s.json'
     ends_in = '%s_polygons.json'
     img_id = 0
@@ -126,15 +144,16 @@ def convert_foggy_cityscapes_instance_only(
     for cat in category_instancesonly:
         category_dict[cat] = cat_id
         cat_id += 1
-
+    s = 0
     for data_set, ann_dir in zip(sets, ann_dirs):
-        print('Starting %s' % data_set)
+        print('Starting %s' % sets_name[s])
         ann_dict = {}
         images = []
         annotations = []
         ann_dir = os.path.join(data_dir, ann_dir)
         for root, _, files in os.walk(ann_dir):
             for filename in files:
+                # pdb.set_trace()
                 if filename.endswith(ends_in % data_set.split('_')[0]):
                     if len(images) % 50 == 0:
                         print("Processed %s images, %s annotations" % (
@@ -198,8 +217,9 @@ def convert_foggy_cityscapes_instance_only(
         print(categories)
         print("Num images: %s" % len(images))
         print("Num annotations: %s" % len(annotations))
-        with open(os.path.join(out_dir, json_name % data_set), 'w') as outfile:
+        with open(os.path.join(out_dir, json_name % sets_name[s]), 'w') as outfile:
             outfile.write(json.dumps(ann_dict))
+        s = s + 1
 
 
 if __name__ == '__main__':

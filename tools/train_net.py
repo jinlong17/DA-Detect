@@ -26,6 +26,9 @@ from maskrcnn_benchmark.utils.logger import setup_logger
 from maskrcnn_benchmark.utils.miscellaneous import mkdir
 
 
+import warnings
+
+
 def train(cfg, local_rank, distributed):
     model = build_detection_model(cfg)
     device = torch.device(cfg.MODEL.DEVICE)
@@ -45,10 +48,15 @@ def train(cfg, local_rank, distributed):
     arguments["iteration"] = 0
 
     output_dir = cfg.OUTPUT_DIR
+    # save_dir = cfg.SAVE_DIR
+    save_dir = "/home/jinlong/2.Special_issue_DA/trained_models/faster_r-cnn"
 
     save_to_disk = get_rank() == 0
+    # checkpointer = DetectronCheckpointer(
+    #     cfg, model, optimizer, scheduler, output_dir, save_to_disk
+    # )
     checkpointer = DetectronCheckpointer(
-        cfg, model, optimizer, scheduler, output_dir, save_to_disk
+        cfg, model, optimizer, scheduler, save_dir, save_to_disk
     )
     extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT)
     arguments.update(extra_checkpoint_data)
@@ -138,6 +146,7 @@ def test(cfg, model, distributed):
 
 
 def main():
+    
     parser = argparse.ArgumentParser(description="PyTorch Object Detection Training")
     parser.add_argument(
         "--config-file",
