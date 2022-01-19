@@ -49,7 +49,8 @@ def train(cfg, local_rank, distributed):
 
     output_dir = cfg.OUTPUT_DIR
     # save_dir = cfg.SAVE_DIR
-    save_dir = "/home/jinlong/2.Special_issue_DA/trained_models/faster_r-cnn"
+    save_dir = "/home/jinlong/2.Special_issue_DA/trained_models/"
+    # save_dir = "/home/jinlong/2.Special_issue_DA/trained_models/img+ins"
 
     save_to_disk = get_rank() == 0
     # checkpointer = DetectronCheckpointer(

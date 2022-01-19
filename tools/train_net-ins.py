@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-06 14:57:54
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2022-01-06 14:57:54
+LastEditTime: 2022-01-18 18:29:15
 '''
 '''
 Descripttion: 
@@ -80,6 +80,7 @@ def train(cfg, local_rank, distributed):
     checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
 
     if cfg.MODEL.DOMAIN_ADAPTATION_ON:
+        
         source_data_loader = make_data_loader(
             cfg,
             is_train=True,

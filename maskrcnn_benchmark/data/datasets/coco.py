@@ -6,6 +6,7 @@ from maskrcnn_benchmark.structures.bounding_box import BoxList
 from maskrcnn_benchmark.structures.segmentation_mask import SegmentationMask
 from maskrcnn_benchmark.structures.keypoint import PersonKeypoints
 
+import pdb
 
 min_keypoints_per_image = 10
 
@@ -43,6 +44,8 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
         super(COCODataset, self).__init__(root, ann_file)
         # sort indices for reproducible results
         self.ids = sorted(self.ids)
+
+        # pdb.set_trace()
 
         # filter images without detection annotations
         if remove_images_without_annotations:
@@ -97,7 +100,11 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
         if self.transforms is not None:
             img, target = self.transforms(img, target)
 
+        # pdb.set_trace()
+
         return img, target, idx
+
+    # pdb.set_trace()
 
     def get_img_info(self, index):
         img_id = self.id_to_img_map[index]

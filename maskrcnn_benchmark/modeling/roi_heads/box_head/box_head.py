@@ -1,6 +1,16 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-01-18 14:28:09
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import torch
 from torch import nn
+
+import pdb
 
 from .roi_box_feature_extractors import make_roi_box_feature_extractor
 from .roi_box_predictors import make_roi_box_predictor
@@ -57,6 +67,7 @@ class ROIBoxHead(torch.nn.Module):
 
         if self.training:
             with torch.no_grad():
+                # pdb.set_trace()
                 da_proposals = self.loss_evaluator.subsample_for_da(proposals, targets)
 
         da_ins_feas = self.feature_extractor(features, da_proposals)

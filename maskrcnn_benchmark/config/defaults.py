@@ -64,6 +64,7 @@ _C.DATASETS = CN()
 _C.DATASETS.TRAIN = ()
 _C.DATASETS.SOURCE_TRAIN = ()
 _C.DATASETS.TARGET_TRAIN = ()
+_C.DATASETS.TARGET_TRAIN_negative = ()
 # List of the dataset names for testing, as present in paths_catalog.py
 _C.DATASETS.TEST = ()
 

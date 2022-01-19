@@ -4,13 +4,13 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-04 23:51:49
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2022-01-05 16:21:05
+LastEditTime: 2022-01-18 15:22:10
 '''
 """
 This file contains specific functions for computing losses on the da_heads
 file
 """
-
+import pdb
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -74,6 +74,7 @@ class DALossComputation(object):
         # all feature levels concatenated, so we keep the same representation
         # for the image-level domain alignment
         for da_img_per_level in da_img:
+            # pdb.set_trace()
             N, A, H, W = da_img_per_level.shape
             da_img_per_level = da_img_per_level.permute(0, 2, 3, 1)
             da_img_label_per_level = torch.zeros_like(da_img_per_level, dtype=torch.float32)
@@ -94,6 +95,7 @@ class DALossComputation(object):
         da_ins_loss = F.binary_cross_entropy_with_logits(
             torch.squeeze(da_ins), da_ins_labels.type(torch.cuda.FloatTensor)
         )
+        # pdb.set_trace()
 
         da_consist_loss = consistency_loss(da_img_consist, da_ins_consist, da_ins_labels, size_average=True)
 
@@ -102,3 +104,12 @@ class DALossComputation(object):
 def make_da_heads_loss_evaluator(cfg):
     loss_evaluator = DALossComputation(cfg)
     return loss_evaluator
+
+
+#TODO: adding Triplet Loss
+def triplet_loss_module(anchor_source, positive_target, negative_target):
+
+    triplet_loss = nn.TripletMarginLoss(margin=1.0, p=2)
+
+    return triplet_loss(anchor_source, positive_target, negative_target)
+

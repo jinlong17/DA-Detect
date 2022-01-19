@@ -1,3 +1,4 @@
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import bisect
 import copy
@@ -13,6 +14,17 @@ from . import samplers
 from .collate_batch import BatchCollator
 from .transforms import build_transforms
 
+import pdb
+import numpy as np
+import random
+
+
+# def setup_seed(seed):
+#      torch.manual_seed(seed)
+#      torch.cuda.manual_seed_all(seed)
+#      np.random.seed(seed)
+#      random.seed(seed)
+#      torch.backends.cudnn.deterministic = True
 
 def build_dataset(dataset_list, transforms, dataset_catalog, is_train=True, is_source=True):
     """
@@ -44,6 +56,7 @@ def build_dataset(dataset_list, transforms, dataset_catalog, is_train=True, is_s
         # make dataset from factory
         dataset = factory(**args)
         datasets.append(dataset)
+    # pdb.set_trace()
 
     # for testing, return a list of datasets
     if not is_train:
@@ -105,7 +118,7 @@ def make_batch_data_sampler(
     return batch_sampler
 
 
-def make_data_loader(cfg, is_train=True, is_source=True, is_distributed=False, start_iter=0):
+def make_data_loader(cfg, is_train=True, is_source=True, is_negative=False, is_distributed=False, start_iter=0):
     num_gpus = get_world_size()
     if is_train:
         images_per_batch = cfg.SOLVER.IMS_PER_BATCH
@@ -120,7 +133,11 @@ def make_data_loader(cfg, is_train=True, is_source=True, is_distributed=False, s
             ), "SOLVER.IMS_PER_BATCH ({}) must be divisible by 2 times the number "
             "of GPUs ({}) used.".format(images_per_batch, num_gpus)
             images_per_gpu = images_per_batch // (2*num_gpus)
-        shuffle = True
+
+
+
+        shuffle = True ##TODO: jinlong
+
         num_iters = cfg.SOLVER.MAX_ITER
     else:
         images_per_batch = cfg.TEST.IMS_PER_BATCH
@@ -129,7 +146,7 @@ def make_data_loader(cfg, is_train=True, is_source=True, is_distributed=False, s
         ), "TEST.IMS_PER_BATCH ({}) must be divisible by the number "
         "of GPUs ({}) used.".format(images_per_batch, num_gpus)
         images_per_gpu = images_per_batch // num_gpus
-        shuffle = False if not is_distributed else True
+        shuffle = False if not is_distributed else True 
         num_iters = None
         start_iter = 0
 
@@ -158,7 +175,16 @@ def make_data_loader(cfg, is_train=True, is_source=True, is_distributed=False, s
 
     if is_train:
         if cfg.MODEL.DOMAIN_ADAPTATION_ON:
-            dataset_list = cfg.DATASETS.SOURCE_TRAIN if is_source else cfg.DATASETS.TARGET_TRAIN
+            #TODO: jinlong
+            # dataset_list = cfg.DATASETS.SOURCE_TRAIN if is_source else cfg.DATASETS.TARGET_TRAIN
+            if is_source:
+                dataset_list = cfg.DATASETS.SOURCE_TRAIN 
+            else:
+                if is_negative:
+                    dataset_list= cfg.DATASETS.TARGET_TRAIN_negative
+                else:
+                    dataset_list= cfg.DATASETS.TARGET_TRAIN
+
         else:
             dataset_list = cfg.DATASETS.TRAIN
     else:

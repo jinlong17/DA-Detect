@@ -11,6 +11,7 @@ from maskrcnn_benchmark.modeling.balanced_positive_negative_sampler import (
 )
 from maskrcnn_benchmark.modeling.utils import cat
 
+import pdb
 
 class FastRCNNLossComputation(object):
     """
@@ -157,6 +158,7 @@ class FastRCNNLossComputation(object):
             img_sampled_inds = torch.nonzero(pos_inds_img | neg_inds_img).squeeze(1)
             proposals_per_image = proposals[img_idx][img_sampled_inds]
             proposals[img_idx] = proposals_per_image
+            # pdb.set_trace()
 
         return proposals
 

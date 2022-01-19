@@ -183,7 +183,7 @@ def convert_cityscapes_instance_only(
         images = []
         annotations = []
         ann_dir = os.path.join(data_dir, ann_dir)
-        # pdb.set_trace()
+        pdb.set_trace()
         for root, _, files in os.walk(ann_dir):
             for filename in files:
                 if filename.endswith(ends_in % data_set.split('_')[0]):
