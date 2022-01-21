@@ -1,3 +1,11 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-01-20 04:07:43
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import random
 

@@ -17,6 +17,7 @@ from maskrcnn_benchmark.modeling.matcher import Matcher
 from maskrcnn_benchmark.structures.boxlist_ops import boxlist_iou
 from maskrcnn_benchmark.structures.boxlist_ops import cat_boxlist
 
+import pdb
 
 class RPNLossComputation(object):
     """
@@ -58,6 +59,7 @@ class RPNLossComputation(object):
         regression_targets = []
         masks = [] #masks for source domain data
         for anchors_per_image, targets_per_image in zip(anchors, targets):
+            # pdb.set_trace()
             is_source = targets_per_image.get_field('is_source')
             mask_per_image = is_source.new_ones(1, dtype=torch.bool) if is_source.any() else is_source.new_zeros(1, dtype=torch.bool)
             masks.append(mask_per_image)
@@ -112,7 +114,7 @@ class RPNLossComputation(object):
         labels, regression_targets, masks = self.prepare_targets(anchors, targets)
         
         masks = torch.cat(masks, dim=0)
-        
+        # pdb.set_trace()
         sampled_pos_inds, sampled_neg_inds = self.fg_bg_sampler(labels)
         sampled_pos_inds = torch.nonzero(torch.cat(sampled_pos_inds, dim=0)).squeeze(1)
         sampled_neg_inds = torch.nonzero(torch.cat(sampled_neg_inds, dim=0)).squeeze(1)

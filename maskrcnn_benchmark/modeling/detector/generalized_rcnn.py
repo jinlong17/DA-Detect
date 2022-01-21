@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-04 23:51:49
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2022-01-19 00:52:03
+LastEditTime: 2022-01-20 12:56:51
 '''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 """
@@ -62,13 +62,12 @@ class GeneralizedRCNN(nn.Module):
         images = to_image_list(images)
 
         features = self.backbone(images.tensors)
+        # pdb.set_trace()
         proposals, proposal_losses = self.rpn(images, features, targets)
 
 
         da_losses = {}
         if self.roi_heads:
-
-    
 
 
                 if self.training: #TODO: jinlong-New values for triplet loss
@@ -88,7 +87,8 @@ class GeneralizedRCNN(nn.Module):
                     ori_features.append(features[0][0:2].clone())
                     ori_proposals = proposals[0:2]
                     ori_targets = targets[0:2]
-                    print("ori_proposals: ", ori_proposals)
+                    # print("ori_proposals: ", ori_proposals)
+                    # print("ori_targets: ", ori_targets)
 
                     x, result, detector_losses, da_ins_feas, da_ins_labels = self.roi_heads(ori_features, ori_proposals, ori_targets)
                 

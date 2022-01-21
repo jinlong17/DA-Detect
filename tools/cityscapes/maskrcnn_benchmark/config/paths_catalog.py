@@ -159,7 +159,7 @@ class DatasetCatalog(object):
                 ann_file=os.path.join(data_dir, attrs["ann_file"]),
             )
             return dict(
-                factory="COCODataset",
+                factory="COCODataset", #TODO: jinlong  original: COCODataset
                 args=args,
             )
         elif "voc" in name:

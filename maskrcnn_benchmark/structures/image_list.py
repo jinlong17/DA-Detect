@@ -1,6 +1,14 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-01-19 22:52:12
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 from __future__ import division
-
+import pdb
 import torch
 
 
@@ -57,6 +65,7 @@ def to_image_list(tensors, size_divisible=0):
         image_sizes = [tensor.shape[-2:] for tensor in tensors]
         return ImageList(tensors, image_sizes)
     elif isinstance(tensors, (tuple, list)):
+        # pdb.set_trace()
         max_size = tuple(max(s) for s in zip(*[img.shape for img in tensors]))
 
         # TODO Ideally, just remove this and let me model handle arbitrary

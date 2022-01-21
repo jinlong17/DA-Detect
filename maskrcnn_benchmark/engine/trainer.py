@@ -145,9 +145,11 @@ def do_da_train(
     end = time.time()
  
     for iteration, ((source_images, source_targets, idx1), (target_images, target_targets, idx2)) in enumerate(zip(source_data_loader, target_data_loader), start_iter):
-        # pdb.set_trace()
+        
+
         data_time = time.time() - end
         arguments["iteration"] = iteration
+        pdb.set_trace()
 
         images = (source_images+target_images).to(device)
         targets = [target.to(device) for target in list(source_targets+target_targets)]
@@ -155,7 +157,6 @@ def do_da_train(
         loss_dict = model(images, targets)
 
         losses = sum(loss for loss in loss_dict.values())
-        # pdb.set_trace()
 
         # reduce losses over all GPUs for logging purposes
         loss_dict_reduced = reduce_loss_dict(loss_dict)
@@ -214,11 +215,23 @@ def do_da_train(
 
 ### TODO: Jinlong add the triplet loss by jinlong
 
+# def do_triplet_da_train(
+#     model,
+#     # source_data_loader,
+#     Positive_target_data_loader,
+#     # Negative_target_data_loader,
+#     optimizer,
+#     scheduler,
+#     checkpointer,
+#     device,
+#     checkpoint_period,
+#     arguments,
+#     cfg
+# ):
+
 def do_triplet_da_train(
     model,
-    source_data_loader,
     Positive_target_data_loader,
-    Negative_target_data_loader,
     optimizer,
     scheduler,
     checkpointer,
@@ -230,21 +243,39 @@ def do_triplet_da_train(
     logger = logging.getLogger("maskrcnn_benchmark.trainer")
     logger.info("Start training")
     meters = MetricLogger(delimiter=" ")
-    max_iter = len(source_data_loader)
+    max_iter = len(Positive_target_data_loader)
     start_iter = arguments["iteration"]
     model.train()
     start_training_time = time.time()
     end = time.time()
+
     #TODO: jinlong
-    for iteration, ((source_images, source_targets, idx1), (target_images, target_targets, idx2), (target_images_n, target_targets_n, idx3)) in enumerate(zip(source_data_loader, Positive_target_data_loader, Negative_target_data_loader), start_iter):
+    # for iteration, ((img_s, target_s, idx1), (img_p, target_p, idx2), (img_n, target_n, idx3)) in enumerate(zip(source_data_loader, Positive_target_data_loader, Negative_target_data_loader), start_iter):
+    #     print("idx1: ", idx1, "idx2: ", idx2, "idx3: ", idx3)
+        # pdb.set_trace()
+    for iteration, iter_data in enumerate(Positive_target_data_loader, start_iter):
+        img_s, target_s, img_p, target_p, img_n, target_n, idx1, idx2, idx3 = iter_data
+        # img_s, target_s, img_p = iter_data
+        # pdb.set_trace()
+        if idx1[-1] != idx2[-1] or idx1[-1] !=idx3[-1] or idx2[-1] != idx3[-1] :
 
+            print('Three images: Dont Match!!!!!  ','idx1: ', idx1[0],"  idx2: ", idx2[0], "  idx3: ", idx3[0], '\n', '\n')
 
-        print('idx1: ', idx1, 'idx2: ', idx2, 'idx3: ', idx3)
+            continue
+
+        # print('idx1: ', idx1,'\n',"idx2: ", idx2, '\n', "idx3: ", idx3)
+        
         data_time = time.time() - end
         arguments["iteration"] = iteration
 
-        images = (source_images+target_images+target_images_n).to(device)
-        targets = [target.to(device) for target in list(source_targets+target_targets+target_targets_n)]
+        images = (img_s + img_p + img_n).to(device)
+        targets = [target.to(device) for target in list(target_s + target_p + target_n)]
+        # pdb.set_trace()
+        # images = (img_s).to(device)
+        # targets = [target.to(device) for target in list(target_s)]
+
+        # images = (target_images).to(device)
+        # targets = [target.to(device) for target in list(target_targets)]
 
         loss_dict = model(images, targets)
 

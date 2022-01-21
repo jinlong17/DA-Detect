@@ -132,23 +132,23 @@ class DatasetCatalog(object):
         },
         "foggy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
             "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/train",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/annotations/foggy_instancesonly_filtered_gtFine_train.json"
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
         },
 
         "foggy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
             "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/val",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/annotations/foggy_instancesonly_filtered_gtFine_val.json"
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
         },
 
 
         "rainy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
             "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/leftImg8bit_rain/train",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/annotations/instancesonly_filtered_gtFine_train.json"
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
         },
 
         "rainy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
             "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/leftImg8bit_rain/val",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/annotations/instancesonly_filtered_gtFine_val.json"
+            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
         },
 
         #TODO:jinlong

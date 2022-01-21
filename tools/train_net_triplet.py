@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-18 18:28:34
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2022-01-18 23:18:27
+LastEditTime: 2022-01-20 15:38:48
 '''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 """
@@ -20,7 +20,8 @@ import os
 
 import torch
 from maskrcnn_benchmark.config import cfg
-from maskrcnn_benchmark.data import make_data_loader
+from maskrcnn_benchmark.data import make_data_loader, make_data_loader_da
+# import maskrcnn_benchmark.data.make_data_loader_triplet 
 from maskrcnn_benchmark.solver import make_lr_scheduler
 from maskrcnn_benchmark.solver import make_optimizer
 from maskrcnn_benchmark.engine.inference import inference
@@ -38,6 +39,7 @@ from maskrcnn_benchmark.utils.miscellaneous import mkdir
 import numpy as np
 import random
 
+import pdb
 
 def setup_seed(seed):
      torch.manual_seed(seed)
@@ -89,31 +91,38 @@ def train(cfg, local_rank, distributed):
 
     if cfg.MODEL.DOMAIN_ADAPTATION_ON:
         
-        source_data_loader = make_data_loader(
+        # source_data_loader = make_data_loader(
+        #     cfg,
+        #     is_train=True,
+        #     is_source=True,
+        #     is_negative=False,
+        #     is_distributed=distributed,
+        #     start_iter=arguments["iteration"],
+        # )
+        # Negative_target_data_loader = make_data_loader(
+        #     cfg,
+        #     is_train=True,
+        #     is_source=False,
+        #     is_negative=True,
+        #     is_distributed=distributed,
+        #     start_iter=arguments["iteration"],
+        # )
+        # Positive_target_data_loader = make_data_loader(
+        #     cfg,
+        #     is_train=True,
+        #     is_source=False,
+        #     is_negative=False,
+        #     is_distributed=distributed,
+        #     start_iter=arguments["iteration"],
+        # )
+        Positive_target_data_loader = make_data_loader_da(
             cfg,
             is_train=True,
-            is_source=True,
+            is_source=[True, False, False],
             is_negative=False,
             is_distributed=distributed,
             start_iter=arguments["iteration"],
         )
-        Positive_target_data_loader = make_data_loader(
-            cfg,
-            is_train=True,
-            is_source=False,
-            is_negative=False,
-            is_distributed=distributed,
-            start_iter=arguments["iteration"],
-        )
-        Negative_target_data_loader = make_data_loader(
-            cfg,
-            is_train=True,
-            is_source=False,
-            is_negative=True,
-            is_distributed=distributed,
-            start_iter=arguments["iteration"],
-        )
-
         # do_da_train(
         #     model,
         #     source_data_loader,
@@ -126,11 +135,12 @@ def train(cfg, local_rank, distributed):
         #     arguments,
         #     cfg,
         # )
+
         do_triplet_da_train(
             model,
-            source_data_loader,
+            # source_data_loader,
             Positive_target_data_loader,
-            Negative_target_data_loader,
+            # Negative_target_data_loader,
             optimizer,
             scheduler,
             checkpointer,
@@ -253,6 +263,8 @@ def main():
         config_str = "\n" + cf.read()
         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
+
+    # pdb.set_trace()
 
     model = train(cfg, args.local_rank, args.distributed)
 
