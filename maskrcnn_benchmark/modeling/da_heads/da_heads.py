@@ -250,12 +250,20 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         img_grl_fea = [self.grl_img(fea) for fea in img_features]
         ins_grl_fea = self.grl_ins(da_ins_feature)
         #TODO:jinlong
-        img_grl_fea_s = [self.grl_img(fea) for fea in img_features_s]
-        img_grl_fea_p = [self.grl_img(fea) for fea in img_features_p]
-        img_grl_fea_n = [self.grl_img(fea) for fea in img_features_n]
-        ins_grl_fea_s = self.grl_ins(da_ins_fea_s)
-        ins_grl_fea_p = self.grl_ins(da_ins_fea_p)
-        ins_grl_fea_n = self.grl_ins(da_ins_fea_n)
+        # img_grl_fea_s = [self.grl_img(fea) for fea in img_features_s]
+        # img_grl_fea_p = [self.grl_img(fea) for fea in img_features_p]
+        # img_grl_fea_n = [self.grl_img(fea) for fea in img_features_n]
+        # ins_grl_fea_s = self.grl_ins(da_ins_fea_s)
+        # ins_grl_fea_p = self.grl_ins(da_ins_fea_p)
+        # ins_grl_fea_n = self.grl_ins(da_ins_fea_n)
+
+        img_grl_fea_s = [self.grl_img_consist(fea) for fea in img_features_s]
+        img_grl_fea_p = [self.grl_img_consist(fea) for fea in img_features_p]
+        img_grl_fea_n = [self.grl_img_consist(fea) for fea in img_features_n]
+        ins_grl_fea_s = self.grl_ins_consist(da_ins_fea_s)
+        ins_grl_fea_p = self.grl_ins_consist(da_ins_fea_p)
+        ins_grl_fea_n = self.grl_ins_consist(da_ins_fea_n)
+
 
         img_grl_consist_fea = [self.grl_img_consist(fea) for fea in img_features]
         ins_grl_consist_fea = self.grl_ins_consist(da_ins_feature)
@@ -266,10 +274,19 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         da_img_features_s = self.imghead(img_grl_fea_s)
         da_img_features_p = self.imghead(img_grl_fea_p)
         da_img_features_n = self.imghead(img_grl_fea_n)
-        # pdb.set_trace()
         da_ins_features_s = self.inshead(ins_grl_fea_s)
         da_ins_features_p = self.inshead(ins_grl_fea_p)
         da_ins_features_n = self.inshead(ins_grl_fea_n)
+        # pdb.set_trace()
+        # da_img_features_s = img_grl_fea_s
+        # da_img_features_p = img_grl_fea_p
+        # da_img_features_n = img_grl_fea_n
+        # da_ins_features_s = ins_grl_fea_s
+        # da_ins_features_p = ins_grl_fea_p
+        # da_ins_features_n = ins_grl_fea_n
+
+
+
 
         da_img_consist_features = self.imghead(img_grl_consist_fea)
         da_ins_consist_features = self.inshead(ins_grl_consist_fea)
@@ -292,11 +309,20 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
             losses = {}
             if self.img_weight > 0:
-                losses["loss_da_image"] = self.img_weight * da_img_loss
-                losses["triplet_loss_da_image"] = self.img_weight * da_triplet_img_loss#TODO: jinlong
+                losses["loss_da_image"] = self.img_weight * da_img_loss*0.1
+                # losses["triplet_loss_da_image"] = self.img_weight * da_triplet_img_loss#TODO: jinlong
             if self.ins_weight > 0:
-                losses["loss_da_instance"] = self.ins_weight * da_ins_loss
-                losses["triplet_loss_da_instance"] = self.ins_weight * da_triplet_ins_loss #TODO: jinlong
+                losses["loss_da_instance"] = self.ins_weight * da_ins_loss*0.1
+                losses["triplet_loss_da_instance"] = self.ins_weight * da_triplet_ins_loss*0.1#TODO: jinlong
+            # if self.img_weight > 0:
+            #     losses["loss_da_image"] = self.img_weight* da_img_loss/da_img_loss.detach()*0.1
+            #     losses["triplet_loss_da_image"] =  self.img_weight*da_triplet_img_loss/da_triplet_img_loss.detach()*0.1#TODO: jinlong
+            # if self.ins_weight > 0:
+            #     losses["loss_da_instance"] = self.ins_weight* da_ins_loss/da_ins_loss.detach()*0.1
+            #     losses["triplet_loss_da_instance"] = self.ins_weight* da_triplet_ins_loss/da_triplet_ins_loss.detach()*0.1 #TODO: jinlong
+
+
+
             # if self.cst_weight > 0:
             #     losses["loss_da_consistency"] = self.cst_weight * da_consistency_loss
             return losses

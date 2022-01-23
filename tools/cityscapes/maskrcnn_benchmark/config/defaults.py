@@ -78,7 +78,7 @@ _C.DATASETS.TEST = ()
 # -----------------------------------------------------------------------------
 _C.DATALOADER = CN()
 # Number of data loading threads
-_C.DATALOADER.NUM_WORKERS = 1
+_C.DATALOADER.NUM_WORKERS = 0
 # If > 0, this enforces that each collated batch should have a size divisible
 # by SIZE_DIVISIBILITY
 _C.DATALOADER.SIZE_DIVISIBILITY = 0
@@ -455,6 +455,7 @@ _C.TEST.BBOX_AUG.SCALE_H_FLIP = False
 # Misc options
 # ---------------------------------------------------------------------------- #
 _C.OUTPUT_DIR = "/home/jinlong/2.Special_issue_DA/trained_models"
+
 _C.SAVE_DIR = "/home/jinlong/2.Special_issue_DA/trained_models"
 
 _C.PATHS_CATALOG = os.path.join(os.path.dirname(__file__), "paths_catalog.py")

@@ -226,7 +226,7 @@ def make_batch_data_sampler(
     return batch_sampler
 
 
-def make_data_loader(cfg, is_train=True, is_source=True, is_negative=False, is_distributed=False, start_iter=0):
+def make_data_loader(cfg, is_train=True, is_source=True, is_negative=False, is_distributed=False, is_for_period=False, start_iter=0):
     num_gpus = get_world_size()
     if is_train:
         images_per_batch = cfg.SOLVER.IMS_PER_BATCH
@@ -389,7 +389,7 @@ def make_data_loader_da(cfg, is_source, is_train=True, is_negative=False, is_dis
 
     transforms = build_transforms(cfg, is_train)
     # pdb.set_trace()
-    datasets = build_dataset_da(dataset_list, transforms, DatasetCatalog,is_source, is_train)
+    datasets = build_dataset_da(dataset_list, transforms, DatasetCatalog,is_source, is_train or is_for_period)
 
     data_loaders = []
     for dataset in datasets:
@@ -406,8 +406,9 @@ def make_data_loader_da(cfg, is_source, is_train=True, is_negative=False, is_dis
             batch_sampler=batch_sampler,
             collate_fn=collator,
         )
+
         data_loaders.append(data_loader)
-    if is_train:
+    if is_train or is_for_period:
         # during training, a single (possibly concatenated) data_loader is returned
         assert len(data_loaders) == 1
         return data_loaders[0]

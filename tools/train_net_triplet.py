@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-18 18:28:34
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2022-01-20 15:38:48
+LastEditTime: 2022-01-23 10:18:15
 '''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 """
@@ -50,8 +50,6 @@ def setup_seed(seed):
 
 
 
-
-
 def train(cfg, local_rank, distributed):
 
     setup_seed(100)
@@ -74,20 +72,22 @@ def train(cfg, local_rank, distributed):
     arguments["iteration"] = 0
 
     output_dir = cfg.OUTPUT_DIR
-    # save_dir = cfg.SAVE_DIR
-    save_dir = "/home/jinlong/2.Special_issue_DA/trained_models/img+ins+triplet"
+
 
     save_to_disk = get_rank() == 0
-    # checkpointer = DetectronCheckpointer(
-    #     cfg, model, optimizer, scheduler, output_dir, save_to_disk
-    # )
+
     checkpointer = DetectronCheckpointer(
-        cfg, model, optimizer, scheduler, save_dir, save_to_disk
+        cfg, model, optimizer, scheduler, output_dir, save_to_disk
     )
     extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT)
     arguments.update(extra_checkpoint_data)
 
     checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
+
+    if checkpoint_period > 0:
+        data_loader_val = make_data_loader(cfg, is_train=False, is_distributed=distributed, is_for_period=False)
+    else:
+        data_loader_val = None
 
     if cfg.MODEL.DOMAIN_ADAPTATION_ON:
         
@@ -140,6 +140,7 @@ def train(cfg, local_rank, distributed):
             model,
             # source_data_loader,
             Positive_target_data_loader,
+            data_loader_val,
             # Negative_target_data_loader,
             optimizer,
             scheduler,
@@ -148,6 +149,7 @@ def train(cfg, local_rank, distributed):
             checkpoint_period,
             arguments,
             cfg,
+            distributed
         )
     else:
         data_loader = make_data_loader(
@@ -207,7 +209,7 @@ def test(cfg, model, distributed):
 
 
 def main():
-    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+    # os.environ["CUDA_VISIBLE_DEVICES"] = "1"
     
     parser = argparse.ArgumentParser(description="PyTorch Object Detection Training")
     parser.add_argument(
@@ -218,18 +220,28 @@ def main():
         type=str,
     )
     parser.add_argument("--local_rank", type=int, default=0)
+
     parser.add_argument(
         "--skip-test",
         dest="skip_test",
         help="Do not test the final model",
         action="store_true",
     )
+
+    parser.add_argument(
+        "--output_dir",
+        default="model",#img+ins+triple
+        help="create the file name to save the model file",
+        type=str,
+    )
+
     parser.add_argument(
         "opts",
         help="Modify config options using the command-line",
         default=None,
         nargs=argparse.REMAINDER,
     )
+
 
     args = parser.parse_args()
 
@@ -244,8 +256,13 @@ def main():
         synchronize()
 
     cfg.merge_from_file(args.config_file)
+    path = "/home/jinlong/2.Special_issue_DA/trained_models"
+    # cfg.SAVE_DIR = os.path.join(path,args.output_dir)
+    cfg.OUTPUT_DIR = os.path.join(path,args.output_dir)
+
     cfg.merge_from_list(args.opts)
-    cfg.freeze()
+
+    # cfg.freeze()
 
     output_dir = cfg.OUTPUT_DIR
     if output_dir:
@@ -269,6 +286,7 @@ def main():
     model = train(cfg, args.local_rank, args.distributed)
 
     if not args.skip_test:
+        cfg.OUTPUT_DIR = './'
         test(cfg, model, args.distributed)
 
 
