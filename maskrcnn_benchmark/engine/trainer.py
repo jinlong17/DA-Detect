@@ -383,18 +383,6 @@ def do_triplet_da_train(
                     )
                     synchronize()
                     model.train()
-                    # model.train()
-                    # with torch.no_grad():
-                    #     # Should be one image for each GPU:
-                    #     for iteration_val, (images_val, targets_val, _) in enumerate(tqdm(data_loader_val[0])):
-                    #         images_val = images_val.to(device)
-                    #         targets_val = [target.to(device) for target in targets_val]
-                    #         loss_dict = model(images_val, targets_val)
-                    #         losses = sum(loss for loss in loss_dict.values())
-                    #         loss_dict_reduced = reduce_loss_dict(loss_dict)
-                    #         losses_reduced = sum(loss for loss in loss_dict_reduced.values())
-                    #         meters_val.update(loss=losses_reduced, **loss_dict_reduced)
-                    # synchronize()
                     logger.info(
                         meters_val.delimiter.join(
                             [

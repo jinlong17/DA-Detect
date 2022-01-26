@@ -309,11 +309,11 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
             losses = {}
             if self.img_weight > 0:
-                losses["loss_da_image"] = self.img_weight * da_img_loss*0.1
+                losses["loss_da_image"] = self.img_weight * da_img_loss
                 # losses["triplet_loss_da_image"] = self.img_weight * da_triplet_img_loss#TODO: jinlong
             if self.ins_weight > 0:
-                losses["loss_da_instance"] = self.ins_weight * da_ins_loss*0.1
-                losses["triplet_loss_da_instance"] = self.ins_weight * da_triplet_ins_loss*0.1#TODO: jinlong
+                losses["loss_da_instance"] = self.ins_weight * da_ins_loss
+                # losses["triplet_loss_da_instance"] = self.ins_weight * da_triplet_ins_loss#TODO: jinlong
             # if self.img_weight > 0:
             #     losses["loss_da_image"] = self.img_weight* da_img_loss/da_img_loss.detach()*0.1
             #     losses["triplet_loss_da_image"] =  self.img_weight*da_triplet_img_loss/da_triplet_img_loss.detach()*0.1#TODO: jinlong
@@ -325,7 +325,7 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
             # if self.cst_weight > 0:
             #     losses["loss_da_consistency"] = self.cst_weight * da_consistency_loss
-            return losses
+            # return losses
         return {}
 
 def build_da_heads_triplet(cfg):

@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-18 18:28:34
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2022-01-23 10:18:15
+LastEditTime: 2022-01-26 10:37:26
 '''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 """
@@ -69,7 +69,7 @@ def train(cfg, local_rank, distributed):
         )
 
     arguments = {}
-    arguments["iteration"] = 0
+    arguments["iteration"] = 42500
 
     output_dir = cfg.OUTPUT_DIR
 
