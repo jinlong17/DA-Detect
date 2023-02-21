@@ -16,7 +16,7 @@
 <!-- [![video](https://img.shields.io/badge/Video-Presentation-F9D371)]() -->
 
 
-This is a PyTorch implementation of 'Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather', implementedby [jinlong Li](https://jinlong17.github.io/). Wcich is modified from the original code [Domain-Adaptive-Faster-RCNN-PyTorch](https://github.com/krumo/Domain-Adaptive-Faster-RCNN-PyTorch) implementated by Haoran Wang(whrzxzero@gmail.com). The original paper is [Domain adaptive faster r-cnn for object detection in the wild](https://arxiv.org/pdf/1803.03243.pdf), this implementation is built on [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) @ [e60f4ec](https://github.com/facebookresearch/maskrcnn-benchmark/tree/e60f4ec8dc50531debcfd5ae671ea167b5b7a1d9).
+This is a PyTorch implementation of 'Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather', implementedby [jinlong Li](https://jinlong17.github.io/). Which is modified from the original code [Domain-Adaptive-Faster-RCNN-PyTorch](https://github.com/krumo/Domain-Adaptive-Faster-RCNN-PyTorch) implementated by Haoran Wang(whrzxzero@gmail.com). The original paper is [Domain adaptive faster r-cnn for object detection in the wild](https://arxiv.org/pdf/1803.03243.pdf), this implementation is built on [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) @ [e60f4ec](https://github.com/facebookresearch/maskrcnn-benchmark/tree/e60f4ec8dc50531debcfd5ae671ea167b5b7a1d9).
 
 ![teaser](image/DA_faster_rcnn.png)
 
