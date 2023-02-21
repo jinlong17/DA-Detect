@@ -137,6 +137,8 @@ def make_anchor_generator(config):
         ), "FPN should have len(ANCHOR_STRIDE) == len(ANCHOR_SIZES)"
     else:
         assert len(anchor_stride) == 1, "Non-FPN should have a single ANCHOR_STRIDE"
+        
+    print("anchor_stride", anchor_stride)
     anchor_generator = AnchorGenerator(
         anchor_sizes, aspect_ratios, anchor_stride, straddle_thresh
     )

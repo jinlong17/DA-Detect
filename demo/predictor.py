@@ -14,15 +14,26 @@ from maskrcnn_benchmark.utils import cv2_util
 class COCODemo(object):
     # COCO categories for pretty print
     CATEGORIES = [
+    #     'person',
+    #     'rider',
+    #     'car',
+    #     'truck',
+    #     'bus',
+    #     'train',
+    #     'motorcycle',
+    #     'bicycle',
+    # ]
         "__background",
+
         "person",
-        "bicycle",
-        "car",
-        "motorcycle",
+        'rider',
+        'car',
+        'truck',
+        'bus',
+        'train',
+        'motorcycle',
+        'bicycle',
         "airplane",
-        "bus",
-        "train",
-        "truck",
         "boat",
         "traffic light",
         "fire hydrant",
@@ -268,7 +279,7 @@ class COCODemo(object):
             box = box.to(torch.int64)
             top_left, bottom_right = box[:2].tolist(), box[2:].tolist()
             image = cv2.rectangle(
-                image, tuple(top_left), tuple(bottom_right), tuple(color), 1
+                image, tuple(top_left), tuple(bottom_right), tuple(color), 2
             )
 
         return image
@@ -359,12 +370,14 @@ class COCODemo(object):
         labels = [self.CATEGORIES[i] for i in labels]
         boxes = predictions.bbox
 
-        template = "{}: {:.2f}"
+        # template = "{}: {:.2f}"
+        template = "{}"
         for box, score, label in zip(boxes, scores, labels):
             x, y = box[:2]
-            s = template.format(label, score)
+            # s = template.format(label, score)
+            s = template.format(label)
             cv2.putText(
-                image, s, (x, y), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 255, 255), 1
+                image, s, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2
             )
 
         return image

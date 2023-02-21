@@ -1,9 +1,20 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-08-26 12:05:17
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import torch
 
 from .box_head.box_head import build_roi_box_head
 from .mask_head.mask_head import build_roi_mask_head
 from .keypoint_head.keypoint_head import build_roi_keypoint_head
+import pdb
+
+
 
 
 class CombinedROIHeads(torch.nn.ModuleDict):
@@ -23,7 +34,12 @@ class CombinedROIHeads(torch.nn.ModuleDict):
     def forward(self, features, proposals, targets=None):
         losses = {}
         # TODO rename x to roi_box_features, if it doesn't increase memory consumption
+        
+
         x, detections, loss_box, da_ins_feas, da_ins_labels = self.box(features, proposals, targets)
+        #TODO:jinlong for the new branch: mask_branch_proposals_class
+        # x, detections, loss_box, da_ins_feas, da_ins_labels, mask_branch_proposals_class = self.box(features, proposals, targets)
+
         losses.update(loss_box)
         if self.cfg.MODEL.MASK_ON:
             mask_features = features
@@ -52,7 +68,10 @@ class CombinedROIHeads(torch.nn.ModuleDict):
             # this makes the API consistent during training and testing
             x, detections, loss_keypoint = self.keypoint(keypoint_features, detections, targets)
             losses.update(loss_keypoint)
-        return x, detections, losses, da_ins_feas, da_ins_labels
+        return x, detections, losses, da_ins_feas, da_ins_labels  
+        #TODO:jinlong: for the new branch
+        # return x, detections, losses, da_ins_feas, da_ins_labels, mask_branch_proposals_class  
+        
 
 
 def build_roi_heads(cfg):

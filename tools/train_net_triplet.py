@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-18 18:28:34
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2022-01-26 10:37:26
+LastEditTime: 2023-02-20 17:13:00
 '''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 """
@@ -21,11 +21,8 @@ import os
 import torch
 from maskrcnn_benchmark.config import cfg
 from maskrcnn_benchmark.data import make_data_loader, make_data_loader_da
-# import maskrcnn_benchmark.data.make_data_loader_triplet 
-from maskrcnn_benchmark.solver import make_lr_scheduler
-from maskrcnn_benchmark.solver import make_optimizer
 from maskrcnn_benchmark.engine.inference import inference
-from maskrcnn_benchmark.engine.trainer import do_train, do_da_train, do_triplet_da_train #TODO: jinlong
+from maskrcnn_benchmark.engine.trainer import do_train, do_da_train
 from maskrcnn_benchmark.modeling.detector import build_detection_model
 from maskrcnn_benchmark.utils.checkpoint import DetectronCheckpointer
 from maskrcnn_benchmark.utils.collect_env import collect_env_info
@@ -33,6 +30,11 @@ from maskrcnn_benchmark.utils.comm import synchronize, get_rank
 from maskrcnn_benchmark.utils.imports import import_file
 from maskrcnn_benchmark.utils.logger import setup_logger
 from maskrcnn_benchmark.utils.miscellaneous import mkdir
+from maskrcnn_benchmark.solver import make_lr_scheduler 
+from maskrcnn_benchmark.solver import make_optimizer
+from maskrcnn_benchmark.utils.metric_logger import (
+    MetricLogger, TensorboardLogger)
+
 
 
 # import warnings
@@ -50,7 +52,8 @@ def setup_seed(seed):
 
 
 
-def train(cfg, local_rank, distributed):
+# def train(cfg, local_rank, distributed):
+def train(cfg, local_rank, distributed, use_tensorboard=False):
 
     setup_seed(100)
 
@@ -69,10 +72,9 @@ def train(cfg, local_rank, distributed):
         )
 
     arguments = {}
-    arguments["iteration"] = 42500
+    arguments["iteration"] = 0
 
-    output_dir = cfg.OUTPUT_DIR
-
+    output_dir = cfg.MODEL.OUTPUT_DIR
 
     save_to_disk = get_rank() == 0
 
@@ -84,73 +86,79 @@ def train(cfg, local_rank, distributed):
 
     checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
 
+    if use_tensorboard:
+        meters = TensorboardLogger(
+            log_dir=cfg.TENSORBOARD_EXPERIMENT,
+            start_iter=arguments['iteration'],
+            delimiter="  ")
+    else:
+        meters = MetricLogger(delimiter="  ")
+
     if checkpoint_period > 0:
         data_loader_val = make_data_loader(cfg, is_train=False, is_distributed=distributed, is_for_period=False)
     else:
         data_loader_val = None
 
     if cfg.MODEL.DOMAIN_ADAPTATION_ON:
-        
-        # source_data_loader = make_data_loader(
-        #     cfg,
-        #     is_train=True,
-        #     is_source=True,
-        #     is_negative=False,
-        #     is_distributed=distributed,
-        #     start_iter=arguments["iteration"],
-        # )
-        # Negative_target_data_loader = make_data_loader(
-        #     cfg,
-        #     is_train=True,
-        #     is_source=False,
-        #     is_negative=True,
-        #     is_distributed=distributed,
-        #     start_iter=arguments["iteration"],
-        # )
-        # Positive_target_data_loader = make_data_loader(
-        #     cfg,
-        #     is_train=True,
-        #     is_source=False,
-        #     is_negative=False,
-        #     is_distributed=distributed,
-        #     start_iter=arguments["iteration"],
-        # )
-        Positive_target_data_loader = make_data_loader_da(
-            cfg,
-            is_train=True,
-            is_source=[True, False, False],
-            is_negative=False,
-            is_distributed=distributed,
-            start_iter=arguments["iteration"],
-        )
-        # do_da_train(
-        #     model,
-        #     source_data_loader,
-        #     target_data_loader,
-        #     optimizer,
-        #     scheduler,
-        #     checkpointer,
-        #     device,
-        #     checkpoint_period,
-        #     arguments,
-        #     cfg,
-        # )
 
-        do_triplet_da_train(
-            model,
-            # source_data_loader,
-            Positive_target_data_loader,
-            data_loader_val,
-            # Negative_target_data_loader,
-            optimizer,
-            scheduler,
-            checkpointer,
-            device,
-            checkpoint_period,
-            arguments,
-            cfg,
-            distributed
-        )
+        triplet_data_loading = cfg.MODEL.DA_HEADS.TRIPLET_USE
+        triplet_data_aligned = cfg.MODEL.DA_HEADS.ALIGNMENT
+
+        if triplet_data_loading:
+            if triplet_data_aligned:
+                Positive_target_data_loader = make_data_loader_da(
+                    cfg,
+                    is_train=True,
+                    is_source=[True, False, False],## source, target, negative
+                    is_negative=False,
+                    is_distributed=distributed,
+                    start_iter=arguments["iteration"],
+                )
+                source_data_loader=[]
+                Negative_target_data_loader=[]
+            else:
+                source_data_loader = make_data_loader(
+                    cfg,
+                    is_train=True,
+                    is_source=True,
+                    is_negative=False,
+                    is_distributed=distributed,
+                    start_iter=arguments["iteration"],
+                )
+                Negative_target_data_loader = make_data_loader(
+                    cfg,
+                    is_train=True,
+                    is_source=False,
+                    is_negative=True,
+                    is_distributed=distributed,
+                    start_iter=arguments["iteration"],
+                )
+                Positive_target_data_loader = make_data_loader(
+                    cfg,
+                    is_train=True,
+                    is_source=False,
+                    is_negative=False,
+                    is_distributed=distributed,
+                    start_iter=arguments["iteration"],
+                )
+            do_da_train(
+                model,
+                source_data_loader,
+                Positive_target_data_loader,
+                Negative_target_data_loader,
+                data_loader_val,
+                optimizer,
+                scheduler,
+                checkpointer,
+                device,
+                checkpoint_period,
+                arguments,
+                cfg,
+                distributed,
+                meters,
+                triplet_data_loading=triplet_data_loading,
+                triplet_data_aligned=triplet_data_aligned
+            )
     else:
         data_loader = make_data_loader(
             cfg,
@@ -173,10 +181,13 @@ def train(cfg, local_rank, distributed):
     return model
 
 
+
+
+
 def test(cfg, model, distributed):
     if distributed:
         model = model.module
-    torch.cuda.empty_cache()  # TODO check if it helps
+    torch.cuda.empty_cache()  #check if it helps
     iou_types = ("bbox",)
     if cfg.MODEL.MASK_ON:
         iou_types = iou_types + ("segm",)
@@ -206,8 +217,6 @@ def test(cfg, model, distributed):
 
 
 
-
-
 def main():
     # os.environ["CUDA_VISIBLE_DEVICES"] = "1"
     
@@ -228,11 +237,19 @@ def main():
         action="store_true",
     )
 
+    # parser.add_argument(
+    #     "--output_dir",
+    #     default="model",#img+ins+triple
+    #     help="create the file name to save the model file",
+    #     type=str,
+    # )
+
     parser.add_argument(
-        "--output_dir",
-        default="model",#img+ins+triple
-        help="create the file name to save the model file",
-        type=str,
+        "--use-tensorboard",
+        dest="use_tensorboard",
+        help="Use tensorboardX logger (Requires tensorboardX installed)",
+        action="store_true",
+        default=False
     )
 
     parser.add_argument(
@@ -256,19 +273,15 @@ def main():
         synchronize()
 
     cfg.merge_from_file(args.config_file)
-    path = "/home/jinlong/2.Special_issue_DA/trained_models"
-    # cfg.SAVE_DIR = os.path.join(path,args.output_dir)
-    cfg.OUTPUT_DIR = os.path.join(path,args.output_dir)
+
+    cfg.MODEL.OUTPUT_DIR = os.path.join(cfg.MODEL.OUTPUT_DIR,cfg.MODEL.OUTPUT_SAVE_NAME)
 
     cfg.merge_from_list(args.opts)
 
-    # cfg.freeze()
+    if cfg.MODEL.OUTPUT_DIR:
+        mkdir(cfg.MODEL.OUTPUT_DIR)
 
-    output_dir = cfg.OUTPUT_DIR
-    if output_dir:
-        mkdir(output_dir)
-
-    logger = setup_logger("maskrcnn_benchmark", output_dir, get_rank())
+    logger = setup_logger("maskrcnn_benchmark", cfg.MODEL.OUTPUT_DIR, get_rank())
     logger.info("Using {} GPUs".format(num_gpus))
     logger.info(args)
 
@@ -281,9 +294,13 @@ def main():
         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
 
-    # pdb.set_trace()
-
-    model = train(cfg, args.local_rank, args.distributed)
+    # model = train(cfg, args.local_rank, args.distributed)
+    model = train(
+        cfg=cfg,
+        local_rank=args.local_rank,
+        distributed=args.distributed,
+        use_tensorboard=args.use_tensorboard
+    )
 
     if not args.skip_test:
         cfg.OUTPUT_DIR = './'

@@ -117,56 +117,63 @@ class DatasetCatalog(object):
         #     "img_dir": "foggy_cityscapes/images",
         #     "ann_file": "foggy_cityscapes/annotations/foggy_instancesonly_filtered_gtFine_val.json"
         # },
-        #TODO:jinlong
+
         "cityscapes_fine_instanceonly_seg_train_cocostyle": {
-            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/leftImg8bit/train",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/leftImg8bit/train",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
         },
         "cityscapes_fine_instanceonly_seg_val_cocostyle": {
-            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/leftImg8bit/val",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/leftImg8bit/val",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
         },
         "cityscapes_fine_instanceonly_seg_test_cocostyle": {
-            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/leftImg8bit/test",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_test.json"
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/leftImg8bit/test",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_test.json"
         },
         "foggy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
-            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/train",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/train",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
         },
 
         "foggy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
-            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/val",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest_foggy/leftImg8bit_foggy/val",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
         },
 
 
         "rainy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
-            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/leftImg8bit_rain/train",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrain/train",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
+            # "ann_file": '/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/caronly/caronly_filtered_gtFine_train.json',
         },
 
         "rainy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
-            "img_dir": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/leftImg8bit_rain/val",
-            "ann_file": "/home/jinlong/2.Special_issue_DA/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrain/val",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
         },
-
-        #TODO:jinlong
-
 
 
         'sim10k_cocostyle': {
                 "img_dir": 'sim10k/JPEGImages',
                 "ann_file": 'sim10k/car_instances.json'
         },
+
+        #### cityscape to KITTI dataset
         'kitti_cocostyle': {
-                "img_dir": 'kitti/training/image_2',
-                "ann_file": 'kitti/annotations/caronly_training.json'
+                "img_dir": '/home/jinlong/jinlong_NAS/Driving/dataset/KITTI/dataset/training/image_2',
+                "ann_file": '/home/jinlong/jinlong_NAS/Driving/dataset/KITTI/dataset/caronly_training.json'
         },
         'cityscapes_car_train_cocostyle': {
-                "img_dir": 'cityscapes/images',
-                "ann_file": 'cityscapes/annotations/caronly_filtered_gtFine_train.json',
+                "img_dir": '/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/leftImg8bit/train',
+                "ann_file": '/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/caronly/caronly_filtered_gtFine_train.json',
         },
+        "cityscapes_rain_car_trian_cocostyle": {
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/leftImg8bit_rain/train",
+            "ann_file": '/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/caronly/caronly_filtered_gtFine_train.json',
+
+        },
+
+
         'cityscapes_car_val_cocostyle': {
                 "img_dir": 'cityscapes/images',
                 "ann_file": 'cityscapes/annotations/caronly_filtered_gtFine_val.json',

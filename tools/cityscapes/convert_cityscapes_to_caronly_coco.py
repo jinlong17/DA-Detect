@@ -26,9 +26,12 @@ import json
 import os
 import scipy.misc
 import sys
-
-import cityscapesscripts.evaluation.instances2dict_with_polygons as cs
+import instances2dict_with_polygons as cs
+# import cityscapesscripts.evaluation.instances2dict_with_polygons as cs
 import numpy as np
+
+import pdb
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert dataset')
@@ -84,22 +87,36 @@ def convert_cityscapes_car_only(
         data_dir, out_dir):
     """Convert from cityscapes format to COCO instance seg format - polygons"""
     sets = [
-        'gtFine_val',
-        'gtFine_train',
+        # 'gtFine_val',
+        # 'gtFine_train',
         # 'gtFine_test',
+        'gtFine',
+        'gtFine',
+        'gtFine',
 
         # 'gtCoarse_train',
         # 'gtCoarse_val',
         # 'gtCoarse_train_extra'
     ]
     ann_dirs = [
-        'gtFine_trainvaltest/gtFine/val',
-        'gtFine_trainvaltest/gtFine/train',
+        # 'gtFine_trainvaltest/gtFine/val',
+        # 'gtFine_trainvaltest/gtFine/train',
         # 'gtFine_trainvaltest/gtFine/test',
 
         # 'gtCoarse/train',
         # 'gtCoarse/train_extra',
         # 'gtCoarse/val'
+        'gtFine/test',
+        'gtFine/val',
+        'gtFine/train',
+    ]
+
+    sets_name = [
+
+        'gtFine_test',
+        'gtFine_val',
+        'gtFine_train',
+
     ]
     json_name = 'caronly_filtered_%s.json'
     ends_in = '%s_polygons.json'
@@ -111,13 +128,14 @@ def convert_cityscapes_car_only(
     category_instancesonly = [
         'car',
     ]
-
+    s=0
     for data_set, ann_dir in zip(sets, ann_dirs):
-        print('Starting %s' % data_set)
+        print('Starting %s' % sets_name[s])
         ann_dict = {}
         images = []
         annotations = []
         ann_dir = os.path.join(data_dir, ann_dir)
+        # pdb.set_trace()
         for root, _, files in os.walk(ann_dir):
             for filename in files:
                 if filename.endswith(ends_in % data_set.split('_')[0]):
@@ -183,8 +201,10 @@ def convert_cityscapes_car_only(
         print("Num images: %s" % len(images))
         print("Num annotations: %s" % len(annotations))
         print(categories)
-        with open(os.path.join(out_dir, json_name % data_set), 'w') as outfile:
+        with open(os.path.join(out_dir, json_name % sets_name[s]), 'w') as outfile:
             outfile.write(json.dumps(ann_dict))
+        
+        s= s+1
 
 
 if __name__ == '__main__':

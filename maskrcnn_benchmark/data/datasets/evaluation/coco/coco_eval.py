@@ -59,11 +59,11 @@ def do_coco_evaluation(
 
 
             #TODO:jinlong
-            # for catId in dataset.coco.getCatIds():
-            #     res = evaluate_predictions_on_coco(
-            #         dataset.coco, coco_results[iou_type], file_path, iou_type, catId
-            #     )
-            #     results.update(res)
+            for catId in dataset.coco.getCatIds():
+                res = evaluate_predictions_on_coco(
+                    dataset.coco, coco_results[iou_type], file_path, iou_type, catId
+                )
+                results.update(res)
 
 
 
@@ -328,8 +328,8 @@ def evaluate_predictions_on_coco(
 
     # coco_dt = coco_gt.loadRes(coco_results)
     coco_eval = COCOeval(coco_gt, coco_dt, iou_type)
-    # if catId:#TODO: jinlong
-    #     coco_eval.params.catIds = [catId]
+    if catId:#TODO: jinlong
+        coco_eval.params.catIds = [catId]
     coco_eval.evaluate()
     coco_eval.accumulate()
     coco_eval.summarize()
@@ -375,17 +375,17 @@ class COCOResults(object):
         catIds = coco_eval.params.catIds
         res = self.results[iou_type]
         metrics = COCOResults.METRICS[iou_type]
+        #TODO:jinlong
+        if len(catIds) is 1:
+            res[catIds[0]] = {}
+            for idx, metric in enumerate(metrics):
+                res[catIds[0]][metric] = s[idx]
+        else:
+            for idx, metric in enumerate(metrics):
+                res[metric] = s[idx]
 
-        # if len(catIds) is 1:
-        #     res[catIds[0]] = {}
-        #     for idx, metric in enumerate(metrics):
-        #         res[catIds[0]][metric] = s[idx]
-        # else:
-        #     for idx, metric in enumerate(metrics):
-        #         res[metric] = s[idx]
-
-        for idx, metric in enumerate(metrics):
-            res[metric] = s[idx]
+        # for idx, metric in enumerate(metrics):
+        #     res[metric] = s[idx]
 
     def __repr__(self):
         # TODO make it pretty

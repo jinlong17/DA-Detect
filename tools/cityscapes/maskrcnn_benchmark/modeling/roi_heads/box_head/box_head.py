@@ -1,3 +1,11 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 10:58:11
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2022-02-13 00:54:39
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import torch
 from torch import nn
@@ -6,7 +14,7 @@ from .roi_box_feature_extractors import make_roi_box_feature_extractor
 from .roi_box_predictors import make_roi_box_predictor
 from .inference import make_roi_box_post_processor
 from .loss import make_roi_box_loss_evaluator
-
+import pdb
 
 class ROIBoxHead(torch.nn.Module):
     """
@@ -50,6 +58,7 @@ class ROIBoxHead(torch.nn.Module):
 
         if not self.training:
             result = self.post_processor((class_logits, box_regression), proposals)
+            # pdb.set_trace()
             return x, result, {}
 
         loss_classifier, loss_box_reg = self.loss_evaluator(

@@ -1,3 +1,11 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2021-10-15 17:13:40
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2023-02-20 17:12:43
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 # Set up custom environment before nearly anything else is imported
 # NOTE: this should be the first import (no not reorder)
@@ -8,7 +16,7 @@ import os
 
 import torch
 from maskrcnn_benchmark.config import cfg
-from maskrcnn_benchmark.data import make_data_loader
+from maskrcnn_benchmark.data import make_data_loader, make_data_loader_da
 from maskrcnn_benchmark.engine.inference import inference
 from maskrcnn_benchmark.modeling.detector import build_detection_model
 from maskrcnn_benchmark.utils.checkpoint import DetectronCheckpointer
@@ -61,7 +69,7 @@ def main():
     model = build_detection_model(cfg)
     model.to(cfg.MODEL.DEVICE)
 
-    output_dir = cfg.OUTPUT_DIR
+    output_dir = cfg.MODEL.OUTPUT_DIR
     checkpointer = DetectronCheckpointer(cfg, model, save_dir=output_dir)
     _ = checkpointer.load(cfg.MODEL.WEIGHT)
 
@@ -72,9 +80,9 @@ def main():
         iou_types = iou_types + ("keypoints",)
     output_folders = [None] * len(cfg.DATASETS.TEST)
     dataset_names = cfg.DATASETS.TEST
-    if cfg.OUTPUT_DIR:
+    if cfg.MODEL.OUTPUT_DIR:
         for idx, dataset_name in enumerate(dataset_names):
-            output_folder = os.path.join(cfg.OUTPUT_DIR, "inference", dataset_name)
+            output_folder = os.path.join(cfg.MODEL.OUTPUT_DIR, "inference", dataset_name)
             mkdir(output_folder)
             output_folders[idx] = output_folder
     data_loaders_val = make_data_loader(cfg, is_train=False, is_distributed=distributed)

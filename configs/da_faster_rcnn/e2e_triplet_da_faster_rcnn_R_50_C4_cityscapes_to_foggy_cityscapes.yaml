@@ -1,4 +1,6 @@
 MODEL:
+  OUTPUT_DIR: /home/jinlong/jinlong_NAS/1.model_trained_saved/2023.DA_Cityscapes_modified
+  OUTPUT_SAVE_NAME: rainy_img+obj+AdvGRL+Reg_V2  #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+GRL+Reg_V2 #rainy_img+obj+AdvGRL+Reg_V2
   META_ARCHITECTURE: "GeneralizedRCNN"
   WEIGHT: "catalog://ImageNetPretrained/MSRA/R-50"
   DOMAIN_ADAPTATION_ON: True
@@ -13,25 +15,37 @@ MODEL:
   DA_HEADS:
     DA_IMG_GRL_WEIGHT: 0.1
     DA_INS_GRL_WEIGHT: 0.1
+    DA_IMG_LOSS_WEIGHT: 1.0
+    DA_INS_LOSS_WEIGHT: 1.0
+    DA_TRIPLET_INS_WEIGHT: 1.0
+    DA_TRIPLET_IMG_WEIGHT: 1.0
+    DA_ADV_GRL_THRESHOLD: 30
+    TRIPLET_USE: True
+    ALIGNMENT: True
+    DA_ADV_GRL: True
+
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 DATASETS:
   TRAIN: ("cityscapes_fine_instanceonly_seg_train_cocostyle",)
   SOURCE_TRAIN: ("cityscapes_fine_instanceonly_seg_train_cocostyle",)
-  TARGET_TRAIN: ("foggy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
-  TARGET_TRAIN_negative: ("rainy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
-  TEST: ("foggy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
+  # TARGET_TRAIN: ("foggy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
+  # TARGET_TRAIN_negative: ("rainy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
+  # TEST: ("foggy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
+  TARGET_TRAIN: ("rainy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
+  TARGET_TRAIN_negative: ("foggy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
+  TEST: ("rainy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
 INPUT:
   MIN_SIZE_TRAIN: (600,)
   MAX_SIZE_TRAIN: 1200
   MIN_SIZE_TEST: 600
   MAX_SIZE_TEST: 1200
 SOLVER:
-  BASE_LR: 0.001
+  BASE_LR: 0.001 #0.001
   WEIGHT_DECAY: 0.0005
-  STEPS: (50000,)
-  MAX_ITER: 70000 # 70000
-  # TEST_PERIOD:
+  STEPS: (50000,80000,) #50000
+  MAX_ITER: 100000 # 70000
   IMS_PER_BATCH: 2
 TEST:
   IMS_PER_BATCH: 1
+

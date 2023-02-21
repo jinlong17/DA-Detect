@@ -5,6 +5,8 @@ from .bounding_box import BoxList
 
 from maskrcnn_benchmark.layers import nms as _box_nms
 
+import pdb
+
 
 def boxlist_nms(boxlist, nms_thresh, max_proposals=-1, score_field="scores"):
     """
@@ -24,6 +26,7 @@ def boxlist_nms(boxlist, nms_thresh, max_proposals=-1, score_field="scores"):
     boxlist = boxlist.convert("xyxy")
     boxes = boxlist.bbox
     score = boxlist.get_field(score_field)
+    # pdb.set_trace()
     keep = _box_nms(boxes, score, nms_thresh)
     if max_proposals > 0:
         keep = keep[: max_proposals]

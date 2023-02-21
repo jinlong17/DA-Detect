@@ -60,20 +60,23 @@ _C.INPUT.TO_BGR255 = True
 # Dataset
 # -----------------------------------------------------------------------------
 _C.DATASETS = CN()
-# List of the dataset names for training, as present in paths_catalog.py
+# List of the dataset names for training, as present in paths_catalog.py TODO:
 _C.DATASETS.TRAIN = ()
 _C.DATASETS.SOURCE_TRAIN = ()
 _C.DATASETS.TARGET_TRAIN = ()
 _C.DATASETS.TARGET_TRAIN_negative = ()
+
+
 # List of the dataset names for testing, as present in paths_catalog.py
 _C.DATASETS.TEST = ()
+_C.DATASETS.TEST_SOURCE =()
 
 # -----------------------------------------------------------------------------
 # DataLoader
 # -----------------------------------------------------------------------------
 _C.DATALOADER = CN()
 # Number of data loading threads
-_C.DATALOADER.NUM_WORKERS = 2
+_C.DATALOADER.NUM_WORKERS = 4
 # If > 0, this enforces that each collated batch should have a size divisible
 # by SIZE_DIVISIBILITY
 _C.DATALOADER.SIZE_DIVISIBILITY = 0
@@ -259,6 +262,20 @@ _C.MODEL.DA_HEADS.DA_INS_GRL_WEIGHT = 0.1
 _C.MODEL.DA_HEADS.DA_IMG_LOSS_WEIGHT = 1.0
 _C.MODEL.DA_HEADS.DA_INS_LOSS_WEIGHT = 1.0
 _C.MODEL.DA_HEADS.DA_CST_LOSS_WEIGHT = 0.1
+_C.MODEL.DA_HEADS.DA_TRIPLET_INS_WEIGHT = 1.0
+_C.MODEL.DA_HEADS.DA_TRIPLET_IMG_WEIGHT = 1.0
+_C.MODEL.DA_HEADS.DA_ADV_GRL = True
+_C.MODEL.DA_HEADS.DA_ADV_GRL_THRESHOLD = 30
+_C.MODEL.DA_HEADS.ALIGNMENT = True
+_C.MODEL.DA_HEADS.TRIPLET_USE = True
+_C.MODEL.EVAL_USE_IN_TRAINING = True
+# ---------------------------------------------------------------------------- #
+# Domain Adaptation options
+# ---------------------------------------------------------------------------- #
+_C.MODEL.OUTPUT_DIR = "./"
+_C.MODEL.SAVE_DIR = "./"
+_C.MODEL.OUTPUT_SAVE_NAME = "output"
+
 
 # ---------------------------------------------------------------------------- #
 # ResNe[X]t options (ResNets = {ResNet, ResNeXt}
@@ -355,7 +372,7 @@ _C.MODEL.RETINANET.NMS_TH = 0.4
 _C.SOLVER = CN()
 _C.SOLVER.MAX_ITER = 40000
 
-_C.SOLVER.BASE_LR = 0.001
+_C.SOLVER.BASE_LR = 0.0001
 _C.SOLVER.BIAS_LR_FACTOR = 2
 
 _C.SOLVER.MOMENTUM = 0.9
@@ -394,7 +411,9 @@ _C.TEST.DETECTIONS_PER_IMG = 100
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
-_C.OUTPUT_DIR = "./"
-_C.SAVE_DIR = "/home/jinlong/2.Special_issue_DA/trained_models/img+ins+triple"
+
+_C.TENSORBOARD_EXPERIMENT = "logs/maskrcnn-benchmark"
+# _C.OUTPUT_DIR = "./"
+# _C.SAVE_DIR = "/home/jinlong/2.Special_issue_DA/trained_models/img+ins+triple"
 
 _C.PATHS_CATALOG = os.path.join(os.path.dirname(__file__), "paths_catalog.py")

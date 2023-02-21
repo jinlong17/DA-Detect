@@ -12,20 +12,42 @@ from ..utils.comm import is_main_process
 from ..utils.comm import all_gather
 from ..utils.comm import synchronize
 
+import pdb
+
 
 def compute_on_dataset(model, data_loader, device):
     model.eval()
     results_dict = {}
     cpu_device = torch.device("cpu")
+
+    #TODO:
+    Distance_domain = []
+
     for i, batch in enumerate(tqdm(data_loader)):
         images, targets, image_ids = batch
+    #TODO:
+    # for i, batch in enumerate(tqdm(data_loader)):
+    #     img_s, target_s, img_p, target_p, img_n, target_n, image_ids, idx2, idx3 = iter_data = batch
+    #     # pdb.set_trace()
+
+    #     images = (img_s +img_p)
+
+
         images = images.to(device)
         with torch.no_grad():
             output = model(images)
+            #TODO:jinlong
+            # output, detection_img_MSE = model(images)
+            # Distance_domain.append(detection_img_MSE)
+            
             output = [o.to(cpu_device) for o in output]
         results_dict.update(
             {img_id: result for img_id, result in zip(image_ids, output)}
         )
+    #TODO:jinlong
+    # print()
+    # print("Distance of two domain: ", sum(Distance_domain)/len(Distance_domain))
+    # print()
     return results_dict
 
 
@@ -70,7 +92,10 @@ def inference(
         else 1
     )
     logger = logging.getLogger("maskrcnn_benchmark.inference")
+    #TODO:
     dataset = data_loader.dataset
+    # dataset = data_loader
+
     logger.info("Start evaluation on {} dataset({} images).".format(dataset_name, len(dataset)))
     start_time = time.time()
     predictions = compute_on_dataset(model, data_loader, device)

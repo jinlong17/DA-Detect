@@ -48,7 +48,8 @@ class Dataset_triplet(torch.utils.data.Dataset):
 
 
             # print('idx1: ', idx1,"idx2: ", idx2, "idx3: ", idx3)
-            return img_s, target_s, img_p, target_p_same, img_n, target_n_same, idx1, idx2, idx3
+            # return img_s, target_s, img_p, target_p_same, img_n, target_n_same, idx1, idx2, idx3
+            return img_s, target_s, img_p, target_p_same, img_n, target_n_same
         
 
         def __len__(self):
@@ -106,6 +107,8 @@ def build_dataset_da(dataset_list, transforms, dataset_catalog, is_source, is_tr
     final_dataset = Dataset_triplet(datasets)
 
     # for testing, return a list of datasets
+
+    #TODO: jinlong
     if not is_train:
         return datasets
 
@@ -326,7 +329,7 @@ def make_data_loader(cfg, is_train=True, is_source=True, is_negative=False, is_d
 
 
 #TODO: jinlong
-def make_data_loader_da(cfg, is_source, is_train=True, is_negative=False, is_distributed=False, start_iter=0):
+def make_data_loader_da(cfg, is_source, is_train=True, is_negative=False, is_distributed=False, is_for_period=False, start_iter=0):
     num_gpus = get_world_size()
     if is_train:
         images_per_batch = cfg.SOLVER.IMS_PER_BATCH
@@ -385,7 +388,9 @@ def make_data_loader_da(cfg, is_source, is_train=True, is_negative=False, is_dis
             #TODO:jinlong
             dataset_list = [cfg.DATASETS.SOURCE_TRAIN[0],cfg.DATASETS.TARGET_TRAIN[0], cfg.DATASETS.TARGET_TRAIN_negative[0]]
     else:
+        #TODO:jinlong
         dataset_list = cfg.DATASETS.TEST
+        # dataset_list = [cfg.DATASETS.TEST[0], cfg.DATASETS.TEST_SOURCE[0], cfg.DATASETS.TEST_SOURCE[0]]
 
     transforms = build_transforms(cfg, is_train)
     # pdb.set_trace()

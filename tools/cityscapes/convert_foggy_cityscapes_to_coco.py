@@ -166,7 +166,7 @@ def convert_foggy_cityscapes_instance_only(data_dir, out_dir):
                     image['width'] = json_ann['imgWidth']
                     image['height'] = json_ann['imgHeight']
                     image['file_name'] = filename[:-len(
-                        ends_in % data_set.split('_')[0])] + 'leftImg8bit_foggy_beta_0.02.png'
+                        ends_in % data_set.split('_')[0])] + 'leftImg8bit_foggy_beta_0.02.png'#original 0.02 #######TODO:jinlong
                     image['seg_file_name'] = filename[:-len(
                         ends_in % data_set.split('_')[0])] + \
                         '%s_instanceIds.png' % data_set.split('_')[0]

@@ -1,3 +1,11 @@
+'''
+Descripttion: 
+version: 
+Author: Jinlong Li CSU PhD
+Date: 2022-01-04 23:51:49
+LastEditors: Jinlong Li CSU PhD
+LastEditTime: 2023-02-18 18:00:27
+'''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 from collections import OrderedDict
 import logging
@@ -85,3 +93,11 @@ def load_state_dict(model, loaded_state_dict):
 
     # use strict loading
     model.load_state_dict(model_state_dict)
+
+
+
+    # new_dict = {k.replace('module.',''):v for k, v in loaded_state_dict.items()
+    #             if 'cls_score' not in k and 'bbox_pred' not in k}
+    # this_state = model.state_dict()
+    # this_state.update(new_dict)
+    # model.load_state_dict(this_state)

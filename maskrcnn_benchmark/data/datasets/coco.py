@@ -96,6 +96,10 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
         domain_labels = torch.ones_like(classes, dtype=torch.bool) if self.is_source else torch.zeros_like(classes, dtype=torch.bool)
         target.add_field("is_source", domain_labels)
 
+        # print("classes: ", classes.size())
+        # print("domain_labels: ", domain_labels.size()) # pdb.set_trace()
+        # print("labels: ", domain_labels)
+
         if anno and "keypoints" in anno[0]:
             keypoints = [obj["keypoints"] for obj in anno]
             keypoints = PersonKeypoints(keypoints, img.size)
@@ -106,6 +110,9 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
         if self.transforms is not None:
             img, target = self.transforms(img, target)
 
+        # print('path: ', os.path.join(self.root, self.coco.loadImgs(self.ids[idx])[0]['file_name']))
+        # idx = [self.coco.loadImgs(self.ids[idx])[0]['file_name'], self.coco.getAnnIds(imgIds=self.ids[idx]), self.ids[idx]]
+        # idx = [self.coco.loadImgs(self.ids[idx])[0]['file_name']]
   
         return img, target, idx
 
