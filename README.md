@@ -4,7 +4,7 @@
  * @Author: Jinlong Li CSU PhD
  * @Date: 2021-10-15 17:13:40
  * @LastEditors: Jinlong Li CSU PhD
- * @LastEditTime: 2023-02-21 14:17:55
+ * @LastEditTime: 2023-02-21 15:02:03
 -->
 # [DA-Detect](https://arxiv.org/abs/2210.15176): Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather (WACV 2023)
 
@@ -127,7 +127,7 @@ Previous existing domain adaptation methods mainly focus on the transfer learnin
 ## Ablation Study Results
 The following results are conducted with the same RestNet-50 backbone on the Cityscapes -> Foggy Cityscapes experiment.
 
-|                                | image-level    | Object-level    |    advGRL    | Regularization | AP@50       | 
+|                                | Image-level    | Object-level    |    AdvGRL    | Regularization | AP@50       | 
 |--------------------------------|:--------------:|:---------------:|:------------:|:--------------:|:-----------:|
 | Faster R-CNN (source only)     |                |                 |              |                |   23.41     |
 | DA Faster (Img+GRL)            |          ✓     |                 |              |                |   38.10     | 
