@@ -4,7 +4,7 @@
  * @Author: Jinlong Li CSU PhD
  * @Date: 2021-10-15 17:13:40
  * @LastEditors: Jinlong Li CSU PhD
- * @LastEditTime: 2023-02-21 15:02:03
+ * @LastEditTime: 2023-02-22 11:51:20
 -->
 # [DA-Detect](https://arxiv.org/abs/2210.15176): Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather (WACV 2023)
 
@@ -102,6 +102,7 @@ An example of Domain Adaptive Faster R-CNN using triplet loss with ResNet adapti
     DA_HEADS:
         DA_ADV_GRL: # True or False, using AdvGRL or GRL
         ALIGNMENT: # True or False,  True is for aligned synthetic dataset training like: Cityscapes dataset, Foggy Cityscapes dataset, and Rainy Cityscapes dataset. False is for cross-camera training.
+        TRIPLET_MARGIN: # the margin of triplet loss 
     ```
 4. Train the Domain Adaptive Faster R-CNN:
     ```
