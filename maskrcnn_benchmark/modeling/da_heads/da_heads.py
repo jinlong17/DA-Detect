@@ -113,7 +113,7 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
         self.advGRL=cfg.MODEL.DA_HEADS.DA_ADV_GRL
         self.advGRL_threshold = cfg.MODEL.DA_HEADS.DA_ADV_GRL_THRESHOLD
-        self.triplet_metric = 1.0
+        self.triplet_metric = cfg.MODEL.DA_HEADS.TRIPLET_MARGIN
 
 
     def DA_Img_component(self,img_features):

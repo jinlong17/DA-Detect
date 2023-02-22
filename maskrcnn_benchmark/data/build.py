@@ -48,8 +48,8 @@ class Dataset_triplet(torch.utils.data.Dataset):
 
 
             # print('idx1: ', idx1,"idx2: ", idx2, "idx3: ", idx3)
-            # return img_s, target_s, img_p, target_p_same, img_n, target_n_same, idx1, idx2, idx3
-            return img_s, target_s, img_p, target_p_same, img_n, target_n_same
+            return img_s, target_s, img_p, target_p_same, img_n, target_n_same, idx1, idx2, idx3
+            # return img_s, target_s, img_p, target_p_same, img_n, target_n_same
         
 
         def __len__(self):

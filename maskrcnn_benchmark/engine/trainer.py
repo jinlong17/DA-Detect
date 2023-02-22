@@ -214,7 +214,7 @@ def do_da_train(
         
         if triplet_data_loading:
             if triplet_data_aligned: # triplet data aligned
-                source_images, source_targets, positive__target_images, positive_target_targets, negative_target_images, negative__target_targets = iter_data ####the dataloader Dataset_triplet() can be found in data/build.py 
+                source_images, source_targets, positive__target_images, positive_target_targets, negative_target_images, negative__target_targets,idx1, idx2, idx3 = iter_data ####the dataloader Dataset_triplet() can be found in data/build.py 
             else: # triplet data not aligned
                 source_images, source_targets = iter_data[0]
                 positive__target_images, positive_target_targets = iter_data[1]
