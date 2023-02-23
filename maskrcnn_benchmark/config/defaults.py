@@ -270,6 +270,7 @@ _C.MODEL.DA_HEADS.ALIGNMENT = True
 _C.MODEL.DA_HEADS.TRIPLET_USE = True
 _C.MODEL.EVAL_USE_IN_TRAINING = True
 _C.MODEL.DA_HEADS.TRIPLET_MARGIN = 1.0
+_C.MODEL.DA_HEADS.TRIPLET_MAX_MARGIN = 1.0
 # ---------------------------------------------------------------------------- #
 # Domain Adaptation options
 # ---------------------------------------------------------------------------- #

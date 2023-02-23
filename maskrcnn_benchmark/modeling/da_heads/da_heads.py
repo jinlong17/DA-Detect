@@ -116,6 +116,7 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         self.advGRL=cfg.MODEL.DA_HEADS.DA_ADV_GRL
         self.advGRL_threshold = cfg.MODEL.DA_HEADS.DA_ADV_GRL_THRESHOLD
         self.triplet_metric = cfg.MODEL.DA_HEADS.TRIPLET_MARGIN
+        self.triplet_max_margin = cfg.MODEL.DA_HEADS.TRIPLET_MAX_MARGIN
 
 
     def DA_Img_component(self,img_features):
@@ -179,17 +180,19 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         img_features_p = img_fea_set[1]
         img_features_n = img_fea_set[2]
         #adaptive triplet loss
-        da_triplet_img_loss = self.loss_evaluator.triplet_img_loss(img_features_s[0], img_features_p[0], img_features_n[0],self.triplet_img[-1], adaptive=True,lr=0.001, max_margin=3.0, margin=self.triplet_metric)
+        da_triplet_img_loss = self.loss_evaluator.triplet_img_loss(img_features_s[0], img_features_p[0], img_features_n[0],self.triplet_img[-1], adaptive=True,lr=0.001, max_margin=self.triplet_max_margin, margin=self.triplet_metric)
 
         # print("da_triplet_img_loss is used. ")
+        # L1_loss = nn.L1Loss()
+        # print("img_pos_dist is ",str(L1_loss(img_features_s[0],img_features_p[0]).detach().cpu().item())," img_neg_dist is ",str(L1_loss(img_features_s[0],img_features_n[0]).detach().cpu().item()))
 
         return da_triplet_img_loss
 
-    def Domainlevel_Ins_component(self,da_ins_feas_set):
+    def Domainlevel_Ins_component(self,da_ins_fea_set):
 
-        da_ins_fea_s = da_ins_feas_set[0]
-        da_ins_fea_p = da_ins_feas_set[1]
-        da_ins_fea_n = da_ins_feas_set[2]
+        da_ins_fea_s = da_ins_fea_set[0]
+        da_ins_fea_p = da_ins_fea_set[1]
+        da_ins_fea_n = da_ins_fea_set[2]
 
         da_ins_fea_s = self.avgpool(da_ins_fea_s)
         da_ins_fea_p = self.avgpool(da_ins_fea_p)
@@ -200,7 +203,9 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         da_ins_fea_n = da_ins_fea_n.view(da_ins_fea_n.size(0), -1)
 
         #adaptive triplet loss
-        da_triplet_ins_loss = self.loss_evaluator.triplet_ins_loss(da_ins_fea_s, da_ins_fea_p, da_ins_fea_n,self.triplet_ins[-1], adaptive=True,lr=0.001, max_margin=2.0, margin=self.triplet_metric)
+        da_triplet_ins_loss = self.loss_evaluator.triplet_ins_loss(da_ins_fea_s, da_ins_fea_p, da_ins_fea_n,self.triplet_ins[-1], adaptive=True,lr=0.001, max_margin=self.triplet_max_margin, margin=self.triplet_metric)
+
+        # print("Ins_pos_dist is ",str((da_ins_fea_s-da_ins_fea_p).pow(2).sum(1).item()), "Ins_neg_dist is ",str((da_ins_fea_s-da_ins_fea_n).pow(2).sum(1).item()))
 
         # print("da_triplet_ins_loss is used. ")
 

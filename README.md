@@ -4,7 +4,7 @@
  * @Author: Jinlong Li CSU PhD
  * @Date: 2021-10-15 17:13:40
  * @LastEditors: Jinlong Li CSU PhD
- * @LastEditTime: 2023-02-23 12:19:34
+ * @LastEditTime: 2023-02-23 16:58:26
 -->
 # [DA-Detect](https://arxiv.org/abs/2210.15176): Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather (WACV 2023)
 
@@ -16,7 +16,7 @@
 <!-- [![video](https://img.shields.io/badge/Video-Presentation-F9D371)]() -->
 
 
-This is a PyTorch implementation of 'Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather', implemented by [jinlong Li](https://jinlong17.github.io/). Which is modified from the original code [Domain-Adaptive-Faster-RCNN-PyTorch](https://github.com/krumo/Domain-Adaptive-Faster-RCNN-PyTorch) implementated by Haoran Wang(whrzxzero@gmail.com). The original paper is [Domain adaptive faster r-cnn for object detection in the wild](https://arxiv.org/pdf/1803.03243.pdf), this implementation is built on [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) @ [e60f4ec](https://github.com/facebookresearch/maskrcnn-benchmark/tree/e60f4ec8dc50531debcfd5ae671ea167b5b7a1d9).
+This is a PyTorch implementation of 'Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather', implemented by [jinlong Li](https://jinlong17.github.io/).
 
 ![teaser](image/DA_faster_rcnn.png)
 
@@ -151,30 +151,9 @@ The following results are conducted with the same RestNet-50 backbone on the Cit
   year={2023}
 }
 ```
-If you find this repository useful, please cite the oringinal paper:
-
-```
-@inproceedings{chen2018domain,
-  title={Domain Adaptive Faster R-CNN for Object Detection in the Wild},
-      author =     {Chen, Yuhua and Li, Wen and Sakaridis, Christos and Dai, Dengxin and Van Gool, Luc},
-      booktitle =  {Computer Vision and Pattern Recognition (CVPR)},
-      year =       {2018}
-  }
-```
-and maskrnn-benchmark:
-
-```
-@misc{massa2018mrcnn,
-author = {Massa, Francisco and Girshick, Ross},
-title = {{maskrnn-benchmark: Fast, modular reference implementation of Instance Segmentation and Object Detection algorithms in PyTorch}},
-year = {2018},
-howpublished = {\url{https://github.com/facebookresearch/maskrcnn-benchmark}},
-note = {Accessed: [Insert date here]}
-}
-```
 
 ## Acknowledgment
- This code is modified based on the original code [Domain-Adaptive-Faster-RCNN-PyTorch](https://github.com/krumo/Domain-Adaptive-Faster-RCNN-PyTorch) and [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark). Thanks.
+ This code is modified based on the code [Domain-Adaptive-Faster-RCNN-PyTorch](https://github.com/krumo/Domain-Adaptive-Faster-RCNN-PyTorch) and [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark). Thanks.
 
 
 

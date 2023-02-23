@@ -279,7 +279,10 @@ def do_da_train(
             return 
 
         if eval_use_in_training:
+
             if iteration % checkpoint_period == 0:
+                if iteration ==0:
+                    continue
                 synchronize()
                 with torch.no_grad():
                     if data_loader_val is not None and checkpoint_period > 0:

@@ -47,17 +47,18 @@ def train(cfg, local_rank, distributed):
     arguments = {}
     arguments["iteration"] = 0
 
-    output_dir = cfg.OUTPUT_DIR
-    # save_dir = cfg.SAVE_DIR
-    save_dir = "/home/jinlong/2.Special_issue_DA/trained_models/"
-    # save_dir = "/home/jinlong/2.Special_issue_DA/trained_models/img+ins"
+
+    save_path = os.path.join(cfg.MODEL.OUTPUT_DIR,cfg.MODEL.OUTPUT_SAVE_NAME)
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
 
     save_to_disk = get_rank() == 0
     # checkpointer = DetectronCheckpointer(
     #     cfg, model, optimizer, scheduler, output_dir, save_to_disk
     # )
     checkpointer = DetectronCheckpointer(
-        cfg, model, optimizer, scheduler, save_dir, save_to_disk
+        cfg, model, optimizer, scheduler, save_path, save_to_disk
     )
     extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT)
     arguments.update(extra_checkpoint_data)
@@ -125,9 +126,9 @@ def test(cfg, model, distributed):
         iou_types = iou_types + ("keypoints",)
     output_folders = [None] * len(cfg.DATASETS.TEST)
     dataset_names = cfg.DATASETS.TEST
-    if cfg.OUTPUT_DIR:
+    if cfg.MODEL.OUTPUT_DIR:
         for idx, dataset_name in enumerate(dataset_names):
-            output_folder = os.path.join(cfg.OUTPUT_DIR, "inference", dataset_name)
+            output_folder = os.path.join(cfg.MODEL.OUTPUT_DIR, "inference", dataset_name)
             mkdir(output_folder)
             output_folders[idx] = output_folder
     data_loaders_val = make_data_loader(cfg, is_train=False, is_distributed=distributed)
@@ -186,7 +187,7 @@ def main():
     cfg.merge_from_list(args.opts)
     cfg.freeze()
 
-    output_dir = cfg.OUTPUT_DIR
+    output_dir = os.path.join(cfg.MODEL.OUTPUT_DIR, cfg.MODEL.OUTPUT_SAVE_NAME)
     if output_dir:
         mkdir(output_dir)
 
