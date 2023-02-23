@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-04 23:51:49
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2023-02-19 03:05:05
+LastEditTime: 2023-02-22 17:46:51
 '''
 """
 This file contains specific functions for computing losses on the da_heads
@@ -123,6 +123,11 @@ class DALossComputation_Component(object):
 
         self.pooler = pooler
         self.avgpool = nn.AvgPool2d(kernel_size=resolution, stride=resolution)
+
+        #for triplet loss
+        self.margin_ins = 0.0
+        self.margin_img = 0.0
+
         
     def prepare_masks(self, targets):
         masks = []
@@ -173,9 +178,47 @@ class DALossComputation_Component(object):
         da_consist_loss = consistency_loss(da_img_consist, da_ins_consist, da_ins_labels, size_average=True)
         return da_consist_loss
 
-    def triplet_loss(self, anchor_source, positive_target, negative_target,m=1.0):
+    def triplet_img_loss(self, anchor_source, positive_target, negative_target,loss, adaptive=True,lr=0.001, max_margin=3.0, margin=1.0):
 
-        triplet_loss = nn.TripletMarginLoss(margin=m, p=2)
+        if self.margin_img == 0.0:
+
+            self.margin_img= margin 
+
+        #adaptive triplet loss
+        if adaptive:
+
+            if loss == 0.0 and int(self.margin_img) != int(max_margin):
+
+                    self.margin_img = self.margin_img+lr
+
+                    print("Img margin: ", self.margin_img)
+        else:
+
+            self.margin_img = margin  
+
+        triplet_loss = nn.TripletMarginLoss(margin=self.margin_img, p=2)
+
+        return triplet_loss(anchor_source, positive_target, negative_target)
+    
+    def triplet_ins_loss(self, anchor_source, positive_target, negative_target,loss, adaptive=True,lr=0.001, max_margin=3.0, margin=1.0):
+    
+        if self.margin_ins == 0.0:
+
+            self.margin_ins= margin 
+
+        #adaptive triplet loss
+        if adaptive:
+
+            if loss == 0.0 and int(self.margin_ins) != int(max_margin):
+
+                self.margin_ins = self.margin_ins+lr
+
+                print("Ins margin: ", self.margin_ins)
+        else:
+
+            self.margin_ins = margin  
+
+        triplet_loss = nn.TripletMarginLoss(margin=self.margin_ins, p=2)
 
         return triplet_loss(anchor_source, positive_target, negative_target)
 

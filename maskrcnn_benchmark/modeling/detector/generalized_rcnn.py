@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-04 23:51:49
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2023-02-20 17:05:14
+LastEditTime: 2023-02-23 10:33:33
 '''
 '''
 Descripttion: 
@@ -143,4 +143,5 @@ class GeneralizedRCNN(nn.Module):
             losses.update(da_losses)
             return losses
     
+        torch.cuda.empty_cache()
         return result

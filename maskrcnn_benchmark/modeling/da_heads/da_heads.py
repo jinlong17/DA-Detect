@@ -109,6 +109,8 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         # self.loss_triplet = triplet_loss_module
         self.ins_loss = [1]
         self.img_loss = [1]
+        self.triplet_ins = [1]
+        self.triplet_img = [1]
 
 
         self.advGRL=cfg.MODEL.DA_HEADS.DA_ADV_GRL
@@ -176,8 +178,8 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         img_features_s = img_fea_set[0]
         img_features_p = img_fea_set[1]
         img_features_n = img_fea_set[2]
-
-        da_triplet_img_loss = self.loss_evaluator.triplet_loss(img_features_s[0], img_features_p[0], img_features_n[0],self.triplet_metric)
+        #adaptive triplet loss
+        da_triplet_img_loss = self.loss_evaluator.triplet_img_loss(img_features_s[0], img_features_p[0], img_features_n[0],self.triplet_img[-1], adaptive=True,lr=0.001, max_margin=3.0, margin=self.triplet_metric)
 
         # print("da_triplet_img_loss is used. ")
 
@@ -197,7 +199,8 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         da_ins_fea_p = da_ins_fea_p.view(da_ins_fea_p.size(0), -1)
         da_ins_fea_n = da_ins_fea_n.view(da_ins_fea_n.size(0), -1)
 
-        da_triplet_ins_loss = self.loss_evaluator.triplet_loss(da_ins_fea_s, da_ins_fea_p, da_ins_fea_n,self.triplet_metric)
+        #adaptive triplet loss
+        da_triplet_ins_loss = self.loss_evaluator.triplet_ins_loss(da_ins_fea_s, da_ins_fea_p, da_ins_fea_n,self.triplet_ins[-1], adaptive=True,lr=0.001, max_margin=2.0, margin=self.triplet_metric)
 
         # print("da_triplet_ins_loss is used. ")
 
@@ -279,6 +282,9 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
             self.img_loss.append(da_img_loss.cpu().detach()) # log the for advGRL of img
             self.ins_loss.append(da_ins_loss.cpu().detach())# log the for GRL of ins
+            self.triplet_ins.append(da_triplet_ins_loss.cpu().detach())# log the for triplet loss of ins
+            self.triplet_img.append(da_triplet_img_loss.cpu().detach())# log the for triplet loss of img
+
 
 
             return losses

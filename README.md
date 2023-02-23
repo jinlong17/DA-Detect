@@ -4,7 +4,7 @@
  * @Author: Jinlong Li CSU PhD
  * @Date: 2021-10-15 17:13:40
  * @LastEditors: Jinlong Li CSU PhD
- * @LastEditTime: 2023-02-22 11:51:20
+ * @LastEditTime: 2023-02-23 11:47:54
 -->
 # [DA-Detect](https://arxiv.org/abs/2210.15176): Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather (WACV 2023)
 
@@ -16,7 +16,11 @@
 <!-- [![video](https://img.shields.io/badge/Video-Presentation-F9D371)]() -->
 
 
+<<<<<<< HEAD
 This is a PyTorch implementation of 'Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather', implementedby [jinlong Li](https://jinlong17.github.io/). Which is modified from the original code [Domain-Adaptive-Faster-RCNN-PyTorch](https://github.com/krumo/Domain-Adaptive-Faster-RCNN-PyTorch) implementated by Haoran Wang(whrzxzero@gmail.com). The original paper is [Domain adaptive faster r-cnn for object detection in the wild](https://arxiv.org/pdf/1803.03243.pdf), this implementation is built on [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) @ [e60f4ec](https://github.com/facebookresearch/maskrcnn-benchmark/tree/e60f4ec8dc50531debcfd5ae671ea167b5b7a1d9).
+=======
+This is a PyTorch implementation of 'Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather', implemented by [jinlong Li](https://jinlong17.github.io/). Wcich is modified from the original code [Domain-Adaptive-Faster-RCNN-PyTorch](https://github.com/krumo/Domain-Adaptive-Faster-RCNN-PyTorch) implementated by Haoran Wang(whrzxzero@gmail.com). The original paper is [Domain adaptive faster r-cnn for object detection in the wild](https://arxiv.org/pdf/1803.03243.pdf), this implementation is built on [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) @ [e60f4ec](https://github.com/facebookresearch/maskrcnn-benchmark/tree/e60f4ec8dc50531debcfd5ae671ea167b5b7a1d9).
+>>>>>>> add the learnable margin in triple loss
 
 ![teaser](image/DA_faster_rcnn.png)
 
@@ -115,7 +119,7 @@ An example of Domain Adaptive Faster R-CNN using triplet loss with ResNet adapti
 
 ## Proposed Component
 
-### Adversarial Gradient Reversal Layer (AdvGRL)
+### Adversarial Gradient Reversal Layer (**AdvGRL**)
 Illustration of the adversarial mining for hard training examples by the proposed AdvGRL. In this example, we set $\lambda_0$ = 1, $\beta$ = 30. Harder training examples with lower domain classifier loss $L_c$ will have larger response. The function `Adv_GRL()` can be in file `modeling/da_heads.py`. 
 ![teaser](image/grl_loss.png)
 
@@ -128,15 +132,15 @@ Previous existing domain adaptation methods mainly focus on the transfer learnin
 ## Ablation Study Results
 The following results are conducted with the same RestNet-50 backbone on the Cityscapes -> Foggy Cityscapes experiment.
 
-|                                | Image-level    | Object-level    |    AdvGRL    | Regularization | AP@50       | 
-|--------------------------------|:--------------:|:---------------:|:------------:|:--------------:|:-----------:|
-| Faster R-CNN (source only)     |                |                 |              |                |   23.41     |
-| DA Faster (Img+GRL)            |          ✓     |                 |              |                |   38.10     | 
-| DA Faster (Obj+GRL)            |                |          ✓      |              |                |   38.02     |
-| DA Faster (Img+Obj+GRL)        |          ✓     |          ✓      |              |                |   38.43     | 
-| DA Faster (Img+Obj+AdvGRL)     |          ✓     |          ✓      |          ✓   |                |   40.23     |
-| DA Faster (Img+Obj+GRL+Reg)    |          ✓     |          ✓      |              |        ✓       |   41.97     |
-| DA Faster (Img+Obj+AdvGRL+Reg) |          ✓     |          ✓      |          ✓   |        ✓       |   42.34     |
+|                                | Image-level  | Object-level    |    AdvGRL    | Regularization | AP@50       | Download |
+|--------------------------------|:------------:|:---------------:|:------------:|:--------------:|:-----------:|:........:|
+| Faster R-CNN (source only)     |              |                 |              |                |   23.41     |          |         
+| DA Faster (Img+GRL)            |          ✓   |                 |              |                |   38.10     |          | 
+| DA Faster (Obj+GRL)            |              |          ✓      |              |                |   38.02     |          |
+| DA Faster (Img+Obj+GRL)        |          ✓   |          ✓      |              |                |   38.43     |          | 
+| DA Faster (Img+Obj+AdvGRL)     |          ✓   |          ✓      |          ✓   |                |   40.23     |          |
+| DA Faster (Img+Obj+GRL+Reg)    |          ✓   |          ✓      |              |        ✓       |   41.97     |          |
+| DA Faster (Img+Obj+AdvGRL+Reg) |          ✓   |          ✓      |          ✓   |        ✓       |   42.34     |          |
 
 
 
