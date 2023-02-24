@@ -216,16 +216,17 @@ def do_da_train(
             if triplet_data_aligned: # triplet data aligned
                 source_images, source_targets, positive__target_images, positive_target_targets, negative_target_images, negative__target_targets,idx1, idx2, idx3 = iter_data ####the dataloader Dataset_triplet() can be found in data/build.py 
             else: # triplet data not aligned
-                source_images, source_targets = iter_data[0]
-                positive__target_images, positive_target_targets = iter_data[1]
-                negative_target_images, negative__target_targets= iter_data[2]
+                source_images, source_targets, _ = iter_data[0]
+                positive__target_images, positive_target_targets, _ = iter_data[1]
+                negative_target_images, negative__target_targets, _= iter_data[2]
 
             images = (source_images + positive__target_images + negative_target_images).to(device)
             targets = [target.to(device) for target in list(source_targets + positive_target_targets + negative__target_targets)]
 
         else: # load data from 2 dataloaders
-            source_images, source_targets = iter_data[0]
-            positive__target_images, positive_target_targets = iter_data[1]
+            # pdb.set_trace()
+            source_images, source_targets, _ = iter_data[0]
+            positive__target_images, positive_target_targets, _= iter_data[1]
 
             images = (source_images+positive__target_images).to(device)
             targets = [target.to(device) for target in list(source_targets+positive_target_targets)]
@@ -271,6 +272,8 @@ def do_da_train(
                 )
             )
         if iteration % checkpoint_period == 0:
+            if iteration ==0:
+                continue
             checkpointer.save("model_{:07d}".format(iteration), **arguments)
         if iteration == max_iter-1:
             checkpointer.save("model_final", **arguments)

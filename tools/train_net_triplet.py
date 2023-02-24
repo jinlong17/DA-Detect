@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-18 18:28:34
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2023-02-20 17:13:00
+LastEditTime: 2023-02-24 01:07:59
 '''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 """
@@ -141,24 +141,42 @@ def train(cfg, local_rank, distributed, use_tensorboard=False):
                     is_distributed=distributed,
                     start_iter=arguments["iteration"],
                 )
-            do_da_train(
-                model,
-                source_data_loader,
-                Positive_target_data_loader,
-                Negative_target_data_loader,
-                data_loader_val,
-                optimizer,
-                scheduler,
-                checkpointer,
-                device,
-                checkpoint_period,
-                arguments,
+        else:
+            source_data_loader = make_data_loader(
                 cfg,
-                distributed,
-                meters,
-                triplet_data_loading=triplet_data_loading,
-                triplet_data_aligned=triplet_data_aligned
+                is_train=True,
+                is_source=True,
+                is_negative=False,
+                is_distributed=distributed,
+                start_iter=arguments["iteration"],
             )
+            Positive_target_data_loader = make_data_loader(
+                cfg,
+                is_train=True,
+                is_source=False,
+                is_negative=False,
+                is_distributed=distributed,
+                start_iter=arguments["iteration"],
+            )
+            Negative_target_data_loader = []
+        do_da_train(
+            model,
+            source_data_loader,
+            Positive_target_data_loader,
+            Negative_target_data_loader,
+            data_loader_val,
+            optimizer,
+            scheduler,
+            checkpointer,
+            device,
+            checkpoint_period,
+            arguments,
+            cfg,
+            distributed,
+            meters,
+            triplet_data_loading=triplet_data_loading,
+            triplet_data_aligned=triplet_data_aligned
+        )
     else:
         data_loader = make_data_loader(
             cfg,

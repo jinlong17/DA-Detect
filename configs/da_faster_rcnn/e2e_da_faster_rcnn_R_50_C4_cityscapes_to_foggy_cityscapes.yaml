@@ -1,9 +1,9 @@
 MODEL:
   OUTPUT_DIR: /home/jinlong/jinlong_NAS/1.model_trained_saved/2023.DA_Cityscapes_modified
-  OUTPUT_SAVE_NAME:  faster_rcnn
+  OUTPUT_SAVE_NAME: rainy_img+obj+GRL_V3 #faster_rcnn
   META_ARCHITECTURE: "GeneralizedRCNN"
   WEIGHT: "catalog://ImageNetPretrained/MSRA/R-50"
-  DOMAIN_ADAPTATION_ON: False #True
+  DOMAIN_ADAPTATION_ON: True #True
   RPN:
     PRE_NMS_TOP_N_TEST: 6000
     POST_NMS_TOP_N_TEST: 1000
@@ -16,6 +16,9 @@ MODEL:
     DA_IMG_GRL_WEIGHT: 0.1
     DA_INS_GRL_WEIGHT: 0.1
     DA_CST_LOSS_WEIGHT: 1.0
+    TRIPLET_USE: False
+    ALIGNMENT: False
+    DA_ADV_GRL: False
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 DATASETS:

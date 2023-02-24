@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-04 23:51:49
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2023-02-22 17:46:51
+LastEditTime: 2023-02-24 01:29:14
 '''
 """
 This file contains specific functions for computing losses on the da_heads
@@ -67,7 +67,6 @@ class DALossComputation(object):
             da_ins_loss (Tensor)
             da_consist_loss (Tensor)
         """
-        pdb.set_trace()
         masks = self.prepare_masks(targets)
         masks = torch.cat(masks, dim=0)
 
@@ -228,3 +227,8 @@ def make_da_heads_loss_evaluator(cfg):
     loss_evaluator = DALossComputation_Component(cfg)
     return loss_evaluator
 
+
+
+def make_da_heads_loss_evaluator_original(cfg):
+    loss_evaluator = DALossComputation(cfg)
+    return loss_evaluator

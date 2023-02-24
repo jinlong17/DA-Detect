@@ -142,13 +142,14 @@ class DatasetCatalog(object):
 
 
         "rainy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
-            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrain/train",
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrainV1/train",
             "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
             # "ann_file": '/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/caronly/caronly_filtered_gtFine_train.json',
         },
 
         "rainy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
-            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrain/val",
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrainV1/val",
+            # "img_dir": "/home/jinlong/Desktop/Cityscapes_overcast/leftImg8bit/val",
             "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
         },
 

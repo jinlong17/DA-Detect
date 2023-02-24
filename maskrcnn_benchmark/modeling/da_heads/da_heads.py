@@ -6,7 +6,7 @@ from torch import nn
 from maskrcnn_benchmark.layers import GradientScalarLayer
 
 #TODO: jinlong
-from .loss import make_da_heads_loss_evaluator
+from .loss import make_da_heads_loss_evaluator, make_da_heads_loss_evaluator_original
 import pdb
 
 class DAImgHead(nn.Module):
@@ -225,7 +225,7 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         da_img_consist_features = [fea.sigmoid() for fea in da_img_consist_features]###the original component
         da_ins_consist_features = da_ins_consist_features.sigmoid()###the original component
 
-        da_consistency_loss = self.loss_evaluator.loss_consistency(da_img_consist_features, da_ins_consist_features,da_ins_labels)
+        da_consistency_loss = self.loss_evaluator.da_consist_loss(da_img_consist_features, da_ins_consist_features,da_ins_labels)
         return da_consistency_loss
 
     def forward(self, img_features, da_ins_feature, da_ins_labels, da_ins_feas_set, img_fea_set, targets=None):
@@ -338,7 +338,7 @@ class DomainAdaptationModule(torch.nn.Module):
 
         self.imghead = DAImgHead(in_channels)
         self.inshead = DAInsHead(num_ins_inputs)
-        self.loss_evaluator = make_da_heads_loss_evaluator(cfg)
+        self.loss_evaluator_origin = make_da_heads_loss_evaluator_original(cfg)
 
     def forward(self, img_features, da_ins_feature, da_ins_labels, targets=None):
         """
@@ -377,7 +377,7 @@ class DomainAdaptationModule(torch.nn.Module):
 
         
         if self.training:
-            da_img_loss, da_ins_loss, da_consistency_loss = self.loss_evaluator(
+            da_img_loss, da_ins_loss, da_consistency_loss = self.loss_evaluator_origin(
                 da_img_features, da_ins_features, da_img_consist_features, da_ins_consist_features, da_ins_labels, targets
             )
 

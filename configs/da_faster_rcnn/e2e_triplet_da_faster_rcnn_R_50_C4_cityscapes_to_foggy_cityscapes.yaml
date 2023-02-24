@@ -1,6 +1,6 @@
 MODEL:
   OUTPUT_DIR: /home/jinlong/jinlong_NAS/1.model_trained_saved/2023.DA_Cityscapes_modified
-  OUTPUT_SAVE_NAME: rainy_img+obj+AdvGRL+Reg_adaptive0501_V2  #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+GRL+Reg_V2 #rainy_img+obj+AdvGRL+Reg_V2
+  OUTPUT_SAVE_NAME:  rainy_img+obj+GRL_V3 #rainy_img+obj+AdvGRL+Reg_V3  #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+GRL+Reg_V2 #rainy_img+obj+AdvGRL+Reg_V2
   META_ARCHITECTURE: "GeneralizedRCNN"
   WEIGHT: "catalog://ImageNetPretrained/MSRA/R-50"
   DOMAIN_ADAPTATION_ON: True
@@ -18,17 +18,18 @@ MODEL:
     DA_IMG_LOSS_WEIGHT: 1.0
     DA_INS_LOSS_WEIGHT: 1.0
     DA_CST_LOSS_WEIGHT: 0.0
-    DA_TRIPLET_INS_WEIGHT: 1.0
-    DA_TRIPLET_IMG_WEIGHT: 1.0
+    DA_TRIPLET_INS_WEIGHT: 0.0
+    DA_TRIPLET_IMG_WEIGHT: 0.0
     DA_ADV_GRL_THRESHOLD: 30
-    TRIPLET_USE: True
-    ALIGNMENT: True
-    DA_ADV_GRL: True
+    TRIPLET_USE: False
+    ALIGNMENT: False
+    DA_ADV_GRL: False
     TRIPLET_MARGIN: 0.1
     TRIPLET_MAX_MARGIN: 0.5
 
 DATALOADER:
   SIZE_DIVISIBILITY: 32
+  NUM_WORKERS: 0
 DATASETS:
   TRAIN: ("cityscapes_fine_instanceonly_seg_train_cocostyle",)
   SOURCE_TRAIN: ("cityscapes_fine_instanceonly_seg_train_cocostyle",)
