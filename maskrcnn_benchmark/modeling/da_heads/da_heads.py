@@ -211,19 +211,22 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
         return da_triplet_ins_loss
     
-    # def Consistency_component(self,img_features, da_ins_feature,da_ins_labels):
+    def Consistency_component(self,img_features, da_ins_feature,da_ins_labels):
 
-    #     img_grl_consist_fea = [self.grl_img_consist(fea) for fea in img_features]###the original component
-    #     ins_grl_consist_fea = self.grl_ins_consist(da_ins_feature)###the original component
-    #     da_img_consist_features = self.imghead(img_grl_consist_fea)###the original component
-    #     da_ins_consist_features = self.inshead(ins_grl_consist_fea)###the original component
-    #     da_img_consist_features = [fea.sigmoid() for fea in da_img_consist_features]###the original component
-    #     da_ins_consist_features = da_ins_consist_features.sigmoid()###the original component
+        if self.resnet_backbone:
+            da_ins_feature = self.avgpool(da_ins_feature)
 
-    #     da_consistency_loss = self.loss_evaluator.loss_consistency(da_img_consist_features, da_ins_consist_features,da_ins_labels)
-    
+        da_ins_feature = da_ins_feature.view(da_ins_feature.size(0), -1)
 
-    #     return da_consistency_loss
+        img_grl_consist_fea = [self.grl_img_consist(fea) for fea in img_features]###the original component
+        ins_grl_consist_fea = self.grl_ins_consist(da_ins_feature)###the original component
+        da_img_consist_features = self.imghead(img_grl_consist_fea)###the original component
+        da_ins_consist_features = self.inshead(ins_grl_consist_fea)###the original component
+        da_img_consist_features = [fea.sigmoid() for fea in da_img_consist_features]###the original component
+        da_ins_consist_features = da_ins_consist_features.sigmoid()###the original component
+
+        da_consistency_loss = self.loss_evaluator.loss_consistency(da_img_consist_features, da_ins_consist_features,da_ins_labels)
+        return da_consistency_loss
 
     def forward(self, img_features, da_ins_feature, da_ins_labels, da_ins_feas_set, img_fea_set, targets=None):
         """
@@ -257,7 +260,7 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
             da_ins_loss = self.loss_evaluator.da_ins_loss(da_ins_features, da_ins_labels)
 
             ###the consistency loss
-            # da_consistency_loss = self.Consistency_component(img_features, da_ins_feature,da_ins_labels)
+            da_consistency_loss = self.Consistency_component(img_features, da_ins_feature,da_ins_labels)
 
 
             ###the triplet loss for img and ins
@@ -282,8 +285,8 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
             if self.triplet_ins_weight> 0:######triplet loss of ins
                 losses["triplet_loss_da_instance"] = self.triplet_ins_weight * da_triplet_ins_loss
 
-            # if self.cst_weight > 0:###the original component
-                # losses["loss_da_consistency"] = self.cst_weight * da_consistency_loss
+            if self.cst_weight > 0:###the original component
+                losses["loss_da_consistency"] = self.cst_weight * da_consistency_loss
 
             self.img_loss.append(da_img_loss.cpu().detach()) # log the for advGRL of img
             self.ins_loss.append(da_ins_loss.cpu().detach())# log the for GRL of ins
