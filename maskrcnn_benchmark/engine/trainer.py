@@ -21,36 +21,19 @@ from maskrcnn_benchmark.engine.inference import inference
 from maskrcnn_benchmark.utils.comm import synchronize
 import random
 
-def test_when_train(cfg, model, distributed):
-    if distributed:
-        model = model.module
-    torch.cuda.empty_cache()  # TODO check if it helps
-    iou_types = ("bbox",)
-    if cfg.MODEL.MASK_ON:
-        iou_types = iou_types + ("segm",)
-    if cfg.MODEL.KEYPOINT_ON:
-        iou_types = iou_types + ("keypoints",)
-    output_folders = [None] * len(cfg.DATASETS.TEST)
-    dataset_names = cfg.DATASETS.TEST
-    if cfg.MODEL.OUTPUT_DIR:
-        for idx, dataset_name in enumerate(dataset_names):
-            output_folder = os.path.join(cfg.MODEL.OUTPUT_DIR, "inference", dataset_name)
-            mkdir(output_folder)
-            output_folders[idx] = output_folder
-    data_loaders_val = make_data_loader(cfg, is_train=False, is_distributed=distributed)
-    for output_folder, dataset_name, data_loader_val in zip(output_folders, dataset_names, data_loaders_val):
-        inference(
-            model,
-            data_loader_val,
-            dataset_name=dataset_name,
-            iou_types=iou_types,
-            box_only=False if cfg.MODEL.RETINANET_ON else cfg.MODEL.RPN_ONLY,
-            device=cfg.MODEL.DEVICE,
-            expected_results=cfg.TEST.EXPECTED_RESULTS,
-            expected_results_sigma_tol=cfg.TEST.EXPECTED_RESULTS_SIGMA_TOL,
-            output_folder=output_folder,
-        )
-        synchronize()
+# import timm
+# import timm.optim
+# import timm.scheduler
+
+
+def seed_torch(seed=1029):
+    random.seed(seed)   
+    np.random.seed(seed)  
+    torch.manual_seed(seed)   
+    torch.cuda.manual_seed(seed)  
+    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.  
+    torch.backends.cudnn.benchmark = False   # if benchmark=True, deterministic will be False
+    torch.backends.cudnn.deterministic = True  
 
 
 
@@ -90,6 +73,7 @@ def do_train(
     checkpoint_period,
     arguments,
 ):
+    seed_torch()
     logger = logging.getLogger("maskrcnn_benchmark.trainer")
     logger.info("Start training")
     meters = MetricLogger(delimiter="  ")
@@ -183,13 +167,16 @@ def do_da_train(
 ):
     
     eval_use_in_training = cfg.MODEL.EVAL_USE_IN_TRAINING
+    seed_torch()
 
     logger = logging.getLogger("maskrcnn_benchmark.trainer")
     logger.info("Start training")
     # meters = MetricLogger(delimiter=" ")
     # max_iter = len(source_data_loader)
     max_iter = len(positive_target_data_loader)
-    start_iter = arguments["iteration"]
+    # start_iter = arguments["iteration"]
+    start_iter = 0
+
     model.train()
     start_training_time = time.time()
     end = time.time()
@@ -214,22 +201,29 @@ def do_da_train(
         
         if triplet_data_loading:
             if triplet_data_aligned: # triplet data aligned
-                source_images, source_targets, positive__target_images, positive_target_targets, negative_target_images, negative__target_targets,idx1, idx2, idx3 = iter_data ####the dataloader Dataset_triplet() can be found in data/build.py 
+                source_images, source_targets, positive_target_images, positive_target_targets, negative_target_images, negative_target_targets,idx1, idx2, idx3 = iter_data ####the dataloader Dataset_triplet() can be found in data/build.py 
+                # print("this code working-1!")
+                # print("idx1: ", idx1)
+                # print("idx2: ", idx2)
+                # print("idx3: ", idx3)
             else: # triplet data not aligned
                 source_images, source_targets, _ = iter_data[0]
-                positive__target_images, positive_target_targets, _ = iter_data[1]
-                negative_target_images, negative__target_targets, _= iter_data[2]
+                positive_target_images, positive_target_targets, _ = iter_data[1]
+                negative_target_images, negative_target_targets, _= iter_data[2]
+                # print("this code working-2!")
 
-            images = (source_images + positive__target_images + negative_target_images).to(device)
-            targets = [target.to(device) for target in list(source_targets + positive_target_targets + negative__target_targets)]
+            images = (source_images + positive_target_images + negative_target_images).to(device)
+            targets = [target.to(device) for target in list(source_targets + positive_target_targets + negative_target_targets)]
 
         else: # load data from 2 dataloaders
             # pdb.set_trace()
             source_images, source_targets, _ = iter_data[0]
-            positive__target_images, positive_target_targets, _= iter_data[1]
+            positive_target_images, positive_target_targets, _= iter_data[1]
 
-            images = (source_images+positive__target_images).to(device)
+            images = (source_images+positive_target_images).to(device)
             targets = [target.to(device) for target in list(source_targets+positive_target_targets)]
+
+            # print("this code working-3!")
 
         loss_dict = model(images, targets)
 
@@ -244,7 +238,8 @@ def do_da_train(
         losses.backward()
         optimizer.step()
         
-        scheduler.step()
+        # scheduler.step()
+        scheduler.step_update(iteration)
 
         batch_time = time.time() - end
         end = time.time()
@@ -275,6 +270,10 @@ def do_da_train(
             if iteration ==0:
                 continue
             checkpointer.save("model_{:07d}".format(iteration), **arguments)
+
+            print('cosine annealing is chosen for lr scheduler')
+            epoch = int(iteration/checkpoint_period)
+            scheduler.step(epoch)
         if iteration == max_iter-1:
             checkpointer.save("model_final", **arguments)
         if torch.isnan(losses_reduced).any():

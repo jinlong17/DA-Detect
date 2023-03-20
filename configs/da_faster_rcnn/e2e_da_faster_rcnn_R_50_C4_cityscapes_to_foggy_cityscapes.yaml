@@ -26,7 +26,9 @@ DATASETS:
   SOURCE_TRAIN: ("cityscapes_fine_instanceonly_seg_train_cocostyle",)
   TARGET_TRAIN: ("foggy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
   # TEST: ("foggy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
-  TEST: ("rainy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
+  # TEST: ("rainy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
+  # TEST: ("cityscapes_fine_instanceonly_seg_val_cocostyle",)
+  TEST: ("bdd100k_daytime_clear_city_street_val_cocostyle",)
 INPUT:
   MIN_SIZE_TRAIN: (600,)
   MAX_SIZE_TRAIN: 1200

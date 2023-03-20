@@ -68,7 +68,7 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
             v: k for k, v in self.json_category_id_to_contiguous_id.items()
         }
         self.id_to_img_map = {k: v for k, v in enumerate(self.ids)}
-        self.transforms = transforms
+        self._transforms = transforms
         self.is_source = is_source
 
     def __getitem__(self, idx):
@@ -107,8 +107,8 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
 
         target = target.clip_to_image(remove_empty=True)
 
-        if self.transforms is not None:
-            img, target = self.transforms(img, target)
+        if self._transforms is not None:
+            img, target = self._transforms(img, target)
 
         # print('path: ', os.path.join(self.root, self.coco.loadImgs(self.ids[idx])[0]['file_name']))
         # idx = [self.coco.loadImgs(self.ids[idx])[0]['file_name'], self.coco.getAnnIds(imgIds=self.ids[idx]), self.ids[idx]]
@@ -136,7 +136,7 @@ class COCODataset_da(torchvision.datasets.coco.CocoDetection):
     """
 
     def __init__(
-        self, ann_file, root, remove_images_without_annotations, transforms=None, is_source= True
+        self, ann_file, root, remove_images_without_annotations, _transforms=None, is_source= True
     ):
         super(COCODataset, self).__init__(root, ann_file)
         # sort indices for reproducible results
@@ -161,7 +161,7 @@ class COCODataset_da(torchvision.datasets.coco.CocoDetection):
             v: k for k, v in self.json_category_id_to_contiguous_id.items()
         }
         self.id_to_img_map = {k: v for k, v in enumerate(self.ids)}
-        self.transforms = transforms
+        self.transforms = _transforms
         self.is_source = is_source
 
     def __getitem__(self, idx):

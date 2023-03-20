@@ -271,6 +271,10 @@ _C.MODEL.DA_HEADS.TRIPLET_USE = True
 _C.MODEL.EVAL_USE_IN_TRAINING = True
 _C.MODEL.DA_HEADS.TRIPLET_MARGIN = 1.0
 _C.MODEL.DA_HEADS.TRIPLET_MAX_MARGIN = 1.0
+_C.MODEL.DA_HEADS.TRIPLET_MARGIN_INS = 1.0
+_C.MODEL.DA_HEADS.TRIPLET_MARGIN_IMG = 1.0
+_C.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT= 0.1
+_C.MODEL.DA_HEADS.DA_INS_advGRL_WEIGHT = 0.1
 # ---------------------------------------------------------------------------- #
 # Domain Adaptation options
 # ---------------------------------------------------------------------------- #
@@ -388,6 +392,11 @@ _C.SOLVER.STEPS = (30000,)
 _C.SOLVER.WARMUP_FACTOR = 1.0 / 3
 _C.SOLVER.WARMUP_ITERS = 500
 _C.SOLVER.WARMUP_METHOD = "linear"
+
+
+_C.SOLVER.WARMUP_ITERS = 500
+_C.SOLVER.WARMUP_LR = 0.0001
+_C.SOLVER.LR_MIN = 0.000001
 
 _C.SOLVER.CHECKPOINT_PERIOD = 2500 #2500
 

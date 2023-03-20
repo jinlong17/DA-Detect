@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-18 18:28:34
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2023-02-24 01:07:59
+LastEditTime: 2023-03-19 16:55:53
 '''
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 """
@@ -62,7 +62,23 @@ def train(cfg, local_rank, distributed, use_tensorboard=False):
     model.to(device)
 
     optimizer = make_optimizer(cfg, model)
-    scheduler = make_lr_scheduler(cfg, optimizer)
+    # scheduler = make_lr_scheduler(cfg, optimizer)
+    print('cosine annealing is chosen for lr scheduler')
+    from timm.scheduler.cosine_lr import CosineLRScheduler
+
+    num_steps = cfg.SOLVER.MAX_ITER
+    warmup_lr = cfg.SOLVER.WARMUP_LR
+    warmup_steps = cfg.SOLVER.WARMUP_ITERS
+    lr_min = cfg.SOLVER.LR_MIN
+    scheduler = CosineLRScheduler(
+        optimizer,
+        t_initial=num_steps,
+        lr_min=lr_min,
+        warmup_lr_init=warmup_lr,
+        warmup_t=warmup_steps,
+        cycle_limit=1,
+        t_in_epochs=False,
+    )
 
     if distributed:
         model = torch.nn.parallel.DistributedDataParallel(
@@ -116,6 +132,7 @@ def train(cfg, local_rank, distributed, use_tensorboard=False):
                 )
                 source_data_loader=[]
                 Negative_target_data_loader=[]
+                print("Positive_target_data_loader")
             else:
                 source_data_loader = make_data_loader(
                     cfg,
@@ -141,6 +158,7 @@ def train(cfg, local_rank, distributed, use_tensorboard=False):
                     is_distributed=distributed,
                     start_iter=arguments["iteration"],
                 )
+                print("dont alignment Positive_target_data_loader")
         else:
             source_data_loader = make_data_loader(
                 cfg,

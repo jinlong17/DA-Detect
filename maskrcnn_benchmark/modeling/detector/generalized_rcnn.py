@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-04 23:51:49
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2023-02-23 10:33:33
+LastEditTime: 2023-03-19 17:24:59
 '''
 '''
 Descripttion: 
@@ -85,40 +85,49 @@ class GeneralizedRCNN(nn.Module):
 
                 if self.training: ### for Domain Adaptation loss 
 
-                    fea_s = []
-                    fea_p = []
-                    fea_n = []
-                    fea_s.append(features[0][0:1].clone())
-                    fea_p.append(features[0][1:2].clone())
-                    fea_n.append(features[0][2:3].clone())
-                    da_img_fea_set = [fea_s, fea_p, fea_n]
-
-                    ### the original components
-                    ori_features = []
-                    ori_features.append(features[0][0:2].clone())
-                    ori_proposals = proposals[0:2]
-                    ori_targets = targets[0:2]
-
-                    x, result, detector_losses, da_ins_feas, da_ins_labels = self.roi_heads(ori_features, ori_proposals, ori_targets)
-
                     if self.da_heads_triplet:
+
+                        fea_s = []
+                        fea_p = []
+                        fea_n = []
+                        fea_s.append(features[0][0:1].clone())
+                        fea_p.append(features[0][1:2].clone())
+                        fea_n.append(features[0][2:3].clone())
+                        da_img_fea_set = [fea_s, fea_p, fea_n]
+
+                        ### the original components
+                        ori_features = []
+                        ori_features.append(features[0][0:2].clone())
+                        ori_proposals = proposals[0:2]
+                        ori_targets = targets[0:2]
+
+                        x, result, detector_losses, da_ins_feas, da_ins_labels = self.roi_heads(ori_features, ori_proposals, ori_targets)
                                                                                         
                         ###for triplet loss from three proposals
-                        x_, result_, detector_losses_, da_ins_feas_s, da_ins_labels_ = self.roi_heads(fea_s, [proposals[0]], [targets[0]])####Source domain
+                        # x_, result_, detector_losses_, da_ins_feas_s, da_ins_labels_ = self.roi_heads(fea_s, [proposals[0]], [targets[0]])####Source domain
 
                         if self.Aligned:
-                            x_, result_, detector_losses_, da_ins_feas_p, da_ins_labels_ = self.roi_heads(fea_p, [proposals[0]], [targets[1]])####Target domain
-                            x_, result_, detector_losses_, da_ins_feas_n, da_ins_labels_ = self.roi_heads(fea_n, [proposals[0]], [targets[2]])####Negative domain
-                        else:
+                            x_, result_, detector_losses_, da_ins_feas_s, da_ins_labels_ = self.roi_heads(fea_s, [proposals[1]], [targets[0]])####Source domain
                             x_, result_, detector_losses_, da_ins_feas_p, da_ins_labels_ = self.roi_heads(fea_p, [proposals[1]], [targets[1]])####Target domain
-                            x_, result_, detector_losses_, da_ins_feas_n, da_ins_labels_ = self.roi_heads(fea_n, [proposals[2]], [targets[2]])####Negative domain
+                            x_, result_, detector_losses_, da_ins_feas_n, da_ins_labels_ = self.roi_heads(fea_n, [proposals[1]], [targets[2]])####Negative domain
+                            # print("this code working-header!")
+                            da_ins_feas_set = [da_ins_feas_s, da_ins_feas_p, da_ins_feas_n]
+                        else:
+                            # x_, result_, detector_losses_, da_ins_feas_s, da_ins_labels_ = self.roi_heads(fea_s, [proposals[0]], [targets[0]])####Source domain
+                            # x_, result_, detector_losses_, da_ins_feas_p, da_ins_labels_ = self.roi_heads(fea_p, [proposals[1]], [targets[1]])####Target domain
+                            # x_, result_, detector_losses_, da_ins_feas_n, da_ins_labels_ = self.roi_heads(fea_n, [proposals[2]], [targets[2]])####Negative domain
+                            # print("this code working-header-no aligment!")
+                            da_ins_feas_set = [0, 0, 0]
                         
-                        
-                        da_ins_feas_set = [da_ins_feas_s, da_ins_feas_p, da_ins_feas_n]
                         da_losses = self.da_heads_triplet(ori_features, da_ins_feas, da_ins_labels, da_ins_feas_set, da_img_fea_set, ori_targets)### add the da_ins_feas_set
 
                     elif self.da_heads:
+
+                        x, result, detector_losses, da_ins_feas, da_ins_labels = self.roi_heads(features, proposals, targets)
+                        
                         da_losses = self.da_heads(features, da_ins_feas, da_ins_labels, targets)
+
+                        # print("this code working-header-noriginal!")
 
 
 

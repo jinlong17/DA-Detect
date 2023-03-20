@@ -347,7 +347,7 @@ def make_data_loader_da(cfg, is_source, is_train=True, is_negative=False, is_dis
 
 
 
-        shuffle = False ##TODO: jinlong
+        shuffle = True ##TODO: jinlong
 
         num_iters = cfg.SOLVER.MAX_ITER
     else:

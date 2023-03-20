@@ -143,14 +143,29 @@ class DatasetCatalog(object):
 
         "rainy_cityscapes_fine_instanceonly_seg_train_cocostyle": {
             "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrainV1/train",
+            #  "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/leftImg8bit_rain/train",
             "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_train.json"
             # "ann_file": '/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/caronly/caronly_filtered_gtFine_train.json',
         },
 
         "rainy_cityscapes_fine_instanceonly_seg_val_cocostyle": {
             "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/Cityscapes_overcast_rainy/leftImg8bit_heavyrainV1/val",
+            #  "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest_rain/leftImg8bit_rain/val",
             # "img_dir": "/home/jinlong/Desktop/Cityscapes_overcast/leftImg8bit/val",
             "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/DA_cityscapes/leftImg8bit_trainvaltest/annotations/instancesonly_filtered_gtFine_val.json"
+        },
+
+        "bdd100k_daytime_clear_city_street_train_cocostyle": {
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/BDD100K/daytime_clear_city_street_coco/train",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/BDD100K/daytime_clear_city_street_coco/train_bdd100k_coco.json"
+        },
+        "rainy_bdd100k_daytime_clear_city_street_train_cocostyle": {
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/BDD100K/BDD100K_overcast",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/BDD100K/daytime_clear_city_street_coco/train_bdd100k_coco.json"
+        },
+        "bdd100k_daytime_clear_city_street_val_cocostyle": {
+            "img_dir": "/home/jinlong/jinlong_NAS/Driving/dataset/BDD100K/daytime_clear_city_street_coco/val",
+            "ann_file": "/home/jinlong/jinlong_NAS/Driving/dataset/BDD100K/daytime_clear_city_street_coco/val_bdd100k_coco.json"
         },
 
 

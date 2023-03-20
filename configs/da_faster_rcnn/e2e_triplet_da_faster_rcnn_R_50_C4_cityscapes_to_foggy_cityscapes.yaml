@@ -1,6 +1,6 @@
 MODEL:
   OUTPUT_DIR: /home/jinlong/jinlong_NAS/1.model_trained_saved/2023.DA_Cityscapes_modified
-  OUTPUT_SAVE_NAME:  rainy_img+obj+GRL_V3 #rainy_img+obj+AdvGRL+Reg_V3  #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+GRL+Reg_V2 #rainy_img+obj+AdvGRL+Reg_V2
+  OUTPUT_SAVE_NAME: 1.bdd100k_img+obj+advGRL+Regnoins_modified_V0 #foggy_img+obj+GRL_V0 #rainy_img+obj+AdvGRL+Regnoins_V0 #rainy_img+obj+AdvGRL+Reg_V3  #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+AdvGRL_V2 #rainy_img+obj+GRL+Reg_V2 #rainy_img+obj+AdvGRL+Reg_V2
   META_ARCHITECTURE: "GeneralizedRCNN"
   WEIGHT: "catalog://ImageNetPretrained/MSRA/R-50"
   DOMAIN_ADAPTATION_ON: True
@@ -15,17 +15,20 @@ MODEL:
   DA_HEADS:
     DA_IMG_GRL_WEIGHT: 0.1
     DA_INS_GRL_WEIGHT: 0.1
+    DA_IMG_advGRL_WEIGHT: 0.1
+    DA_INS_advGRL_WEIGHT: 0.1
     DA_IMG_LOSS_WEIGHT: 1.0
     DA_INS_LOSS_WEIGHT: 1.0
     DA_CST_LOSS_WEIGHT: 0.0
     DA_TRIPLET_INS_WEIGHT: 0.0
-    DA_TRIPLET_IMG_WEIGHT: 0.0
+    DA_TRIPLET_IMG_WEIGHT: 1.0
     DA_ADV_GRL_THRESHOLD: 30
-    TRIPLET_USE: False
+    TRIPLET_USE: True
     ALIGNMENT: False
-    DA_ADV_GRL: False
-    TRIPLET_MARGIN: 0.1
-    TRIPLET_MAX_MARGIN: 0.5
+    DA_ADV_GRL: True
+    TRIPLET_MAX_MARGIN: 1.0
+    TRIPLET_MARGIN_INS: 1.0
+    TRIPLET_MARGIN_IMG: 1.0
 
 DATALOADER:
   SIZE_DIVISIBILITY: 32
@@ -36,9 +39,12 @@ DATASETS:
   # TARGET_TRAIN: ("foggy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
   # TARGET_TRAIN_negative: ("rainy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
   # TEST: ("foggy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
-  TARGET_TRAIN: ("rainy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
-  TARGET_TRAIN_negative: ("foggy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
-  TEST: ("rainy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
+  # TARGET_TRAIN: ("rainy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
+  # TARGET_TRAIN_negative: ("foggy_cityscapes_fine_instanceonly_seg_train_cocostyle",)
+  # TEST: ("rainy_cityscapes_fine_instanceonly_seg_val_cocostyle",)
+  TARGET_TRAIN: ("bdd100k_daytime_clear_city_street_train_cocostyle",)
+  TARGET_TRAIN_negative: ("rainy_bdd100k_daytime_clear_city_street_train_cocostyle",)
+  TEST: ("bdd100k_daytime_clear_city_street_val_cocostyle",)
 INPUT:
   MIN_SIZE_TRAIN: (600,)
   MAX_SIZE_TRAIN: 1200
@@ -47,9 +53,16 @@ INPUT:
 SOLVER:
   BASE_LR: 0.001 #0.001
   WEIGHT_DECAY: 0.0005
-  STEPS: (50000,80000,) #50000
-  MAX_ITER: 100000 # 70000
+  # STEPS: (50000, 80000) #(120000, 150000,) #50000
+  # MAX_ITER: 70000 # 70000
+
+  STEPS: (50000, 100000,) #50000
+  MAX_ITER: 170000 # 70000
   IMS_PER_BATCH: 2
+  CHECKPOINT_PERIOD: 6640
+  WARMUP_ITERS: 33200
+  WARMUP_LR: 0.0001
+  LR_MIN: 0.000001
 TEST:
   IMS_PER_BATCH: 1
 

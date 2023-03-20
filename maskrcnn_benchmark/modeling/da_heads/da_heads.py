@@ -115,41 +115,55 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
         self.advGRL=cfg.MODEL.DA_HEADS.DA_ADV_GRL
         self.advGRL_threshold = cfg.MODEL.DA_HEADS.DA_ADV_GRL_THRESHOLD
-        self.triplet_metric = cfg.MODEL.DA_HEADS.TRIPLET_MARGIN
+        self.triplet_metric_img = cfg.MODEL.DA_HEADS.TRIPLET_MARGIN_IMG
+        self.triplet_metric_ins = cfg.MODEL.DA_HEADS.TRIPLET_MARGIN_INS
         self.triplet_max_margin = cfg.MODEL.DA_HEADS.TRIPLET_MAX_MARGIN
 
+        self.triplet_loss = self.loss_evaluator.triplet_loss
+        
 
-    def DA_Img_component(self,img_features):
+    def DA_Img_component(self,img_features,targets):
+
+        #clalcute the current loss for advGRL first
+        current_feature = self.imghead(img_features)
+        current_loss = self.loss_evaluator.da_img_loss(current_feature, targets)
 
         if self.advGRL:
-            img_grl_fea = self.Adv_GRL(self.img_loss[-1],img_features)
+            img_grl_fea = self.Adv_GRL_Optimized(current_loss,img_features)
         else:
             img_grl_fea = [self.grl_img(fea) for fea in img_features]
 
         da_img_features = self.imghead(img_grl_fea)
 
         # print("da_img_features is used ")
+        da_img_loss = self.loss_evaluator.da_img_loss(da_img_features, targets)
 
-        return da_img_features
+        return da_img_loss
 
 
 
-    def DA_Ins_component(self,da_ins_feature):
+    def DA_Ins_component(self,da_ins_feature,da_ins_labels):
 
         if self.resnet_backbone:
             da_ins_feature = self.avgpool(da_ins_feature)
         da_ins_feature = da_ins_feature.view(da_ins_feature.size(0), -1)
+
+        #clalcute the current loss for advGRL first
+        current_features = self.inshead(da_ins_feature)
+        current_loss = self.loss_evaluator.da_ins_loss(current_features, da_ins_labels)
         
         if self.advGRL:
-            ins_grl_fea = self.Adv_GRL(self.ins_loss[-1],da_ins_feature,list_option=False)
+            ins_grl_fea = self.Adv_GRL_Optimized(current_loss, da_ins_feature,list_option=False)
         else:
             ins_grl_fea = self.grl_ins(da_ins_feature)
 
         da_ins_features = self.inshead(ins_grl_fea)
+        da_ins_loss = self.loss_evaluator.da_ins_loss(da_ins_features, da_ins_labels)
+
 
         # print("da_ins_features is used")
 
-        return da_ins_features
+        return da_ins_loss 
 
 
     
@@ -159,11 +173,52 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
         if loss_iter <=  self.bce:
             adv_threshold = min(self.advGRL_threshold, 1/loss_iter)
-            self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_GRL_WEIGHT*adv_threshold)
+            # self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold)
 
             if list_option:# for img_features (list[Tensor])
+                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold.numpy())
                 advgrl_fea = [ self.advGRL_optimized(fea) for fea in input_features]
             else: # for da_ins_feature (Tensor)
+                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_INS_advGRL_WEIGHT*adv_threshold.numpy())
+                advgrl_fea = self.advGRL_optimized(input_features)
+        else:
+            if list_option:# for img_features (list[Tensor])
+                advgrl_fea = [self.grl_img(fea) for fea in input_features]###the original component
+            else: # for da_ins_feature (Tensor)
+                advgrl_fea = self.grl_ins(input_features)
+
+        # print("Adv_GRL is used")
+        
+        return advgrl_fea
+    
+    def Adv_GRL_Optimized(self,loss_iter, input_features, list_option=True):
+
+        self.bce_min = F.binary_cross_entropy_with_logits(torch.FloatTensor([[0.7,0.3]]), torch.FloatTensor([[1,0]]))#0.6288
+        self.bce_max = F.binary_cross_entropy_with_logits(torch.FloatTensor([[0.6,0.4]]), torch.FloatTensor([[1,0]]))#0.6753
+        #[0.5, 0.5] = 0.7241, [0.9, 0.1] = 0.5428
+
+        if loss_iter <=  self.bce_min:
+
+            adv_threshold = min(self.advGRL_threshold, 1/loss_iter)
+            # self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold)
+
+            if list_option:# for img_features (list[Tensor])
+                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold.numpy())
+                advgrl_fea = [ self.advGRL_optimized(fea) for fea in input_features]
+            else: # for da_ins_feature (Tensor)
+                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_INS_advGRL_WEIGHT*adv_threshold.numpy())
+                advgrl_fea = self.advGRL_optimized(input_features)
+
+        elif loss_iter >=  self.bce_max:
+
+            adv_threshold = 0.01
+            self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold)
+
+            if list_option:# for img_features (list[Tensor])
+                # self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold.numpy())
+                advgrl_fea = [ self.advGRL_optimized(fea) for fea in input_features]
+            else: # for da_ins_feature (Tensor)
+                # self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_INS_advGRL_WEIGHT*adv_threshold.numpy())
                 advgrl_fea = self.advGRL_optimized(input_features)
         else:
             if list_option:# for img_features (list[Tensor])
@@ -180,7 +235,9 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         img_features_p = img_fea_set[1]
         img_features_n = img_fea_set[2]
         #adaptive triplet loss
-        da_triplet_img_loss = self.loss_evaluator.triplet_img_loss(img_features_s[0], img_features_p[0], img_features_n[0],self.triplet_img[-1], adaptive=True,lr=0.001, max_margin=self.triplet_max_margin, margin=self.triplet_metric)
+        da_triplet_img_loss = self.loss_evaluator.triplet_img_loss(img_features_s[0], img_features_p[0], img_features_n[0],self.triplet_img[-1], adaptive=True,lr=0.001, max_margin=self.triplet_max_margin, margin=self.triplet_metric_img)
+
+        # da_triplet_img_loss = self.triplet_loss(img_features_s[0], img_features_p[0], img_features_n[0], margin=self.triplet_metric_img)
 
         # print("da_triplet_img_loss is used. ")
         # L1_loss = nn.L1Loss()
@@ -193,17 +250,19 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         da_ins_fea_s = da_ins_fea_set[0]
         da_ins_fea_p = da_ins_fea_set[1]
         da_ins_fea_n = da_ins_fea_set[2]
-
-        da_ins_fea_s = self.avgpool(da_ins_fea_s)
-        da_ins_fea_p = self.avgpool(da_ins_fea_p)
-        da_ins_fea_n = self.avgpool(da_ins_fea_n)
+        if self.resnet_backbone:
+            da_ins_fea_s = self.avgpool(da_ins_fea_s)
+            da_ins_fea_p = self.avgpool(da_ins_fea_p)
+            da_ins_fea_n = self.avgpool(da_ins_fea_n)
 
         da_ins_fea_s = da_ins_fea_s.view(da_ins_fea_s.size(0), -1)
         da_ins_fea_p = da_ins_fea_p.view(da_ins_fea_p.size(0), -1)
         da_ins_fea_n = da_ins_fea_n.view(da_ins_fea_n.size(0), -1)
 
         #adaptive triplet loss
-        da_triplet_ins_loss = self.loss_evaluator.triplet_ins_loss(da_ins_fea_s, da_ins_fea_p, da_ins_fea_n,self.triplet_ins[-1], adaptive=True,lr=0.001, max_margin=self.triplet_max_margin, margin=self.triplet_metric)
+        da_triplet_ins_loss = self.loss_evaluator.triplet_ins_loss(da_ins_fea_s, da_ins_fea_p, da_ins_fea_n,self.triplet_ins[-1], adaptive=False,lr=0.001, max_margin=self.triplet_max_margin, margin=self.triplet_metric_ins)
+
+        # da_triplet_ins_loss = self.triplet_loss(da_ins_fea_s, da_ins_fea_p, da_ins_fea_n, margin=self.triplet_metric_ins)
 
         # print("Ins_pos_dist is ",str((da_ins_fea_s-da_ins_fea_p).pow(2).sum(1).item()), "Ins_neg_dist is ",str((da_ins_fea_s-da_ins_fea_n).pow(2).sum(1).item()))
 
@@ -241,10 +300,6 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
                 testing, it is an empty dict.
         """
 
-        da_img_features = self.DA_Img_component(img_features)
-        da_ins_features = self.DA_Ins_component(da_ins_feature)
-
-
         if self.training:
 
             ###the original component
@@ -252,47 +307,34 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
             #     da_img_features, da_ins_features, da_img_consist_features, da_ins_consist_features, da_ins_labels, targets
             # )
 
-
-            ###the DA img loss
-            da_img_loss = self.loss_evaluator.da_img_loss(da_img_features, targets)
-
-            ###the DA ins loss
-            da_ins_loss = self.loss_evaluator.da_ins_loss(da_ins_features, da_ins_labels)
-
-            ###the consistency loss
-            da_consistency_loss = self.Consistency_component(img_features, da_ins_feature,da_ins_labels)
-
-
             ###the triplet loss for img and ins
-            da_triplet_img_loss = self.Domainlevel_Img_component(img_fea_set)
- 
-            da_triplet_ins_loss = self.Domainlevel_Ins_component(da_ins_feas_set)
-
 
             losses = {}
-            if self.img_weight > 0:
-
-                losses["loss_da_image"] = self.img_weight * da_img_loss###the original component
-
-            if self.triplet_img_weight > 0:######triplet loss of img
-                losses["triplet_loss_da_image"] = self.triplet_img_weight * da_triplet_img_loss
-
-
-            if self.ins_weight > 0:
-
-                losses["loss_da_instance"] = self.ins_weight * da_ins_loss###the original component
 
             if self.triplet_ins_weight> 0:######triplet loss of ins
-                losses["triplet_loss_da_instance"] = self.triplet_ins_weight * da_triplet_ins_loss
+                da_triplet_ins_loss = self.Domainlevel_Ins_component(da_ins_feas_set)
+                losses["triplet_loss_instance"] = self.triplet_ins_weight * da_triplet_ins_loss
+                self.triplet_ins.append(da_triplet_ins_loss.cpu().detach())# log the for triplet loss of ins
 
+            if self.triplet_img_weight > 0:######triplet loss of img
+                da_triplet_img_loss = self.Domainlevel_Img_component(img_fea_set)
+                losses["triplet_loss_image"] = self.triplet_img_weight * da_triplet_img_loss
+                self.triplet_img.append(da_triplet_img_loss.cpu().detach())# log the for triplet loss of img
+
+            if self.img_weight > 0:
+                ###the DA img loss
+                da_img_loss = self.DA_Img_component(img_features,targets)
+                losses["loss_da_image"] = self.img_weight * da_img_loss###the original component
+
+            if self.ins_weight > 0:
+                ###the DA ins loss
+                da_ins_loss = self.DA_Ins_component(da_ins_feature,da_ins_labels)
+                losses["loss_da_instance"] = self.ins_weight * da_ins_loss###the original component
+                
             if self.cst_weight > 0:###the original component
+                ###the consistency loss
+                da_consistency_loss = self.Consistency_component(img_features, da_ins_feature,da_ins_labels)
                 losses["loss_da_consistency"] = self.cst_weight * da_consistency_loss
-
-            self.img_loss.append(da_img_loss.cpu().detach()) # log the for advGRL of img
-            self.ins_loss.append(da_ins_loss.cpu().detach())# log the for GRL of ins
-            self.triplet_ins.append(da_triplet_ins_loss.cpu().detach())# log the for triplet loss of ins
-            self.triplet_img.append(da_triplet_img_loss.cpu().detach())# log the for triplet loss of img
-
 
 
             return losses

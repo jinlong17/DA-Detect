@@ -4,7 +4,7 @@
  * @Author: Jinlong Li CSU PhD
  * @Date: 2021-10-15 17:13:40
  * @LastEditors: Jinlong Li CSU PhD
- * @LastEditTime: 2023-02-23 16:58:26
+ * @LastEditTime: 2023-03-19 00:47:42
 -->
 # [DA-Detect](https://arxiv.org/abs/2210.15176): Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather (WACV 2023)
 
@@ -70,6 +70,24 @@ Please follow the instruction in [maskrcnn-benchmark](https://github.com/faceboo
     # MACOSX_DEPLOYMENT_TARGET=10.9 CC=clang CXX=clang++ python setup.py build develop
     ```
 ---
+* If you meet the error ``` RuntimeError: Error compiling objects for extension ``` when running```python setup.py build develop ```, you can use commands as follows, which is in the [link](https://github.com/amazon-science/siam-mot/blob/main/readme/INSTALL.md) :
+```bash
+cuda_dir="maskrcnn_benchmark/csrc/cuda"
+perl -i -pe 's/AT_CHECK/TORCH_CHECK/' $cuda_dir/deform_pool_cuda.cu $cuda_dir/deform_conv_cuda.cu
+# You can then run the regular setup command
+python3 setup.py build develop
+```
+* If you meet the eoor ```UnicodeDecodeError: 'ascii' codec can't decode byte 0xe9 in position  ``` when you are training, you can solve it by modifying that
+
+```python
+if torch._six.PY37:
+    data = pickle.load(f, encoding="latin1")
+else:
+    # data = pickle.load(f)
+    data = pickle.load(f, encoding="latin1")
+```
+* If you meet the warning ```Warning: indexing with dtype torch.uint8 is now deprecated, please use a dtype torch.bool instead ``` or ``` IndexError: list index out of range ``` when you are training, you can solve it following the [solution](https://github.com/facebookresearch/maskrcnn-benchmark/issues/1182) by substitue for all ```torch.bool``` with ```torch.uint8```;
+
 ## Data
 
 1. Download the dataset;

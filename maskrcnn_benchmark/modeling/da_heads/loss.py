@@ -4,7 +4,7 @@ version:
 Author: Jinlong Li CSU PhD
 Date: 2022-01-04 23:51:49
 LastEditors: Jinlong Li CSU PhD
-LastEditTime: 2023-02-24 01:29:14
+LastEditTime: 2023-03-04 02:16:38
 '''
 """
 This file contains specific functions for computing losses on the da_heads
@@ -190,7 +190,7 @@ class DALossComputation_Component(object):
 
                     self.margin_img = self.margin_img+lr
 
-                    print("Img margin: ", self.margin_img)
+                    # print("Img margin: ", self.margin_img)
         else:
 
             self.margin_img = margin  
@@ -212,7 +212,7 @@ class DALossComputation_Component(object):
 
                 self.margin_ins = self.margin_ins+lr
 
-                print("Ins margin: ", self.margin_ins)
+                # print("Ins margin: ", self.margin_ins)
         else:
 
             self.margin_ins = margin  
@@ -221,6 +221,19 @@ class DALossComputation_Component(object):
 
         return triplet_loss(anchor_source, positive_target, negative_target)
 
+    def triplet_loss(self, anchor_source, positive_target, negative_target, margin=1.0):
+
+        triplet_loss = nn.TripletMarginLoss(margin=margin, p=2)
+
+        return triplet_loss(anchor_source, positive_target, negative_target)
+    
+
+
+def triplet_loss_module(anchor_source, positive_target, negative_target,m=1.0):
+
+    triplet_loss = nn.TripletMarginLoss(margin=m, p=2)
+
+    return triplet_loss(anchor_source, positive_target, negative_target)
     
 
 def make_da_heads_loss_evaluator(cfg):
@@ -232,3 +245,4 @@ def make_da_heads_loss_evaluator(cfg):
 def make_da_heads_loss_evaluator_original(cfg):
     loss_evaluator = DALossComputation(cfg)
     return loss_evaluator
+
