@@ -126,10 +126,12 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
 
         #clalcute the current loss for advGRL first
         current_feature = self.imghead(img_features)
+        current_feature = [fea.detach() for fea in current_feature]
         current_loss = self.loss_evaluator.da_img_loss(current_feature, targets)
 
         if self.advGRL:
-            img_grl_fea = self.Adv_GRL_Optimized(current_loss,img_features)
+            # img_grl_fea = self.Adv_GRL_Optimized(current_loss,img_features)
+            img_grl_fea = self.Adv_GRL(current_loss,img_features)
         else:
             img_grl_fea = [self.grl_img(fea) for fea in img_features]
 
@@ -149,11 +151,12 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
         da_ins_feature = da_ins_feature.view(da_ins_feature.size(0), -1)
 
         #clalcute the current loss for advGRL first
-        current_features = self.inshead(da_ins_feature)
+        current_features = self.inshead(da_ins_feature.detach())
         current_loss = self.loss_evaluator.da_ins_loss(current_features, da_ins_labels)
         
         if self.advGRL:
-            ins_grl_fea = self.Adv_GRL_Optimized(current_loss, da_ins_feature,list_option=False)
+            # ins_grl_fea = self.Adv_GRL_Optimized(current_loss, da_ins_feature,list_option=False)
+            ins_grl_fea = self.Adv_GRL(current_loss, da_ins_feature,list_option=False)
         else:
             ins_grl_fea = self.grl_ins(da_ins_feature)
 
@@ -193,8 +196,8 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
     
     def Adv_GRL_Optimized(self,loss_iter, input_features, list_option=True):
 
-        self.bce_min = F.binary_cross_entropy_with_logits(torch.FloatTensor([[0.7,0.3]]), torch.FloatTensor([[1,0]]))#0.6288
-        self.bce_max = F.binary_cross_entropy_with_logits(torch.FloatTensor([[0.6,0.4]]), torch.FloatTensor([[1,0]]))#0.6753
+        self.bce_min = F.binary_cross_entropy_with_logits(torch.FloatTensor([[0.6,0.4]]), torch.FloatTensor([[1,0]]))#0.6288
+        self.bce_max = F.binary_cross_entropy_with_logits(torch.FloatTensor([[0.55,0.45]]), torch.FloatTensor([[1,0]]))#0.6753
         #[0.5, 0.5] = 0.7241, [0.9, 0.1] = 0.5428
 
         if loss_iter <=  self.bce_min:
@@ -203,15 +206,15 @@ class DomainAdaptationModule_triplet(torch.nn.Module):
             # self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold)
 
             if list_option:# for img_features (list[Tensor])
-                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold.numpy())
+                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold)
                 advgrl_fea = [ self.advGRL_optimized(fea) for fea in input_features]
             else: # for da_ins_feature (Tensor)
-                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_INS_advGRL_WEIGHT*adv_threshold.numpy())
+                self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_INS_advGRL_WEIGHT*adv_threshold)
                 advgrl_fea = self.advGRL_optimized(input_features)
 
         elif loss_iter >=  self.bce_max:
 
-            adv_threshold = 0.01
+            adv_threshold = torch.tensor(0.1)
             self.advGRL_optimized = GradientScalarLayer(-1.0*self.cfg.MODEL.DA_HEADS.DA_IMG_advGRL_WEIGHT*adv_threshold)
 
             if list_option:# for img_features (list[Tensor])
