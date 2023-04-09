@@ -4,7 +4,7 @@
  * @Author: Jinlong Li CSU PhD
  * @Date: 2021-10-15 17:13:40
  * @LastEditors: Jinlong Li CSU PhD
- * @LastEditTime: 2023-03-19 00:47:42
+ * @LastEditTime: 2023-04-09 18:03:06
 -->
 # [DA-Detect](https://arxiv.org/abs/2210.15176): Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather (WACV 2023)
 
@@ -88,12 +88,12 @@ else:
 ```
 * If you meet the warning ```Warning: indexing with dtype torch.uint8 is now deprecated, please use a dtype torch.bool instead ``` or ``` IndexError: list index out of range ``` when you are training, you can solve it following the [solution](https://github.com/facebookresearch/maskrcnn-benchmark/issues/1182) by substitue for all ```torch.bool``` with ```torch.uint8```;
 
-## Data
+## DATA
 
 1. Download the dataset;
      * **Source domain**:  leftImg8bit_trainvaltest in [Cityscapes Dataset](https://www.cityscapes-dataset.com/downloads/)
      * **Target domain**: leftImg8bit_trainvaltest_foggy in [Foggy Cityscapes Dataset](https://www.cityscapes-dataset.com/downloads/);
-     * **Auxiliary domain** (**being ready**): for a domain-level metric regularization (use for Triplet loss): [Rainy Cityscape Dataset](): 
+     * **Auxiliary domain** (**being ready**): for a domain-level metric regularization (use for Triplet loss):  1) download the [rainy mask](https://github.com/tsingqguo/efficientderain) (rainmix/Streaks_Garg06.zip);  2) set your paths for rainy mask and Cityscape dataset in the code efficentderain-master/generate_rainy_cityscape.py then to generate the rain cityscape dataset.
 2. Follow the example in [Detectron-DA-Faster-RCNN](https://github.com/krumo/Detectron-DA-Faster-RCNN) to generate coco style annoation files (**Cityscapes Dataset** and **Foggy Cityscapes Dataset**)
 
 
