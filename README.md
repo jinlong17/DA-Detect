@@ -4,7 +4,7 @@
  * @Author: Jinlong Li CSU PhD
  * @Date: 2021-10-15 17:13:40
  * @LastEditors: Jinlong Li CSU PhD
- * @LastEditTime: 2023-04-09 18:08:34
+ * @LastEditTime: 2023-05-26 15:22:34
 -->
 # [DA-Detect](https://arxiv.org/abs/2210.15176): Domain Adaptive Object Detection for Autonomous Driving under Foggy Weather (WACV 2023)
 
@@ -137,7 +137,7 @@ An example of Domain Adaptive Faster R-CNN using triplet loss with ResNet adapti
 
 ### Adversarial Gradient Reversal Layer (**AdvGRL**)
 Illustration of the adversarial mining for hard training examples by the proposed AdvGRL. In this example, we set $\lambda_0$ = 1, $\beta$ = 30. Harder training examples with lower domain classifier loss $L_c$ will have larger response. The function `Adv_GRL()` can be in file `modeling/da_heads.py`. 
-![teaser](image/grl_loss.png)
+![teaser](image/grl_loss1.png)
 
 
 ### Domain-level Metric Regularization (Based on Triplet Loss)
@@ -153,10 +153,10 @@ The following results are conducted with the same RestNet-50 backbone on the Cit
 | Faster R-CNN (source only)     |              |                 |              |                |   23.41     |          |         
 | DA Faster (Img+GRL)            |          ✓   |                 |              |                |   38.10     |          | 
 | DA Faster (Obj+GRL)            |              |          ✓      |              |                |   38.02     |          |
-| DA Faster (Img+Obj+GRL)        |          ✓   |          ✓      |              |                |   38.43     |          | 
-| DA Faster (Img+Obj+AdvGRL)     |          ✓   |          ✓      |          ✓   |                |   40.23     |          |
-| DA Faster (Img+Obj+GRL+Reg)    |          ✓   |          ✓      |              |        ✓       |   41.97     |          |
-| DA Faster (Img+Obj+AdvGRL+Reg) |          ✓   |          ✓      |          ✓   |        ✓       |   42.34     |          |
+| DA Faster (Img+Obj+GRL)        |          ✓   |          ✓      |              |                |   38.43     | [link](https://drive.google.com/drive/folders/1SDvonamSaootM_t4VOXWQw2DMW-4W5sO?usp=sharing)         | 
+| DA Faster (Img+Obj+AdvGRL)     |          ✓   |          ✓      |          ✓   |                |   40.23     | [link](https://drive.google.com/drive/folders/1uVvEp8PJmNmdJzTAlH_07x8TB97SftIG?usp=sharing)         |
+| DA Faster (Img+Obj+GRL+Reg)    |          ✓   |          ✓      |              |        ✓       |   41.97     | [link](https://drive.google.com/drive/folders/1v9OYXldQIOpcDzBwcZ3U7EeSxjZkSejc?usp=sharing)         |
+| DA Faster (Img+Obj+AdvGRL+Reg) |          ✓   |          ✓      |          ✓   |        ✓       |   42.34     | [link](https://drive.google.com/drive/folders/1fsrObOFv5b-JRHcXsqJtc8TdjjvUaQWi?usp=sharing) |
 
 
 
