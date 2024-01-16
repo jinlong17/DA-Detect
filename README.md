@@ -126,7 +126,7 @@ An example of Domain Adaptive Faster R-CNN using triplet loss with ResNet adapti
     ```
 4. Train the Domain Adaptive Faster R-CNN:
     ```
-    python3 tools/train_net.py --config-file "configs/da_faster_rcnn/e2e_triplet_da_faster_rcnn_R_50_C4_cityscapes_to_foggy_cityscapes.yaml"
+    python3 tools/train_net_triplet.py --config-file "configs/da_faster_rcnn/e2e_triplet_da_faster_rcnn_R_50_C4_cityscapes_to_foggy_cityscapes.yaml"
     ```
 5. Test the trained model:
     ```
